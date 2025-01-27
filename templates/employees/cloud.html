@@ -1,0 +1,188 @@
+{% extends 'employees/base.html' %}
+
+<!-- STYLE -->
+{% block style %}
+<style>
+    .uploader {
+        margin: 10px 0;
+    }
+
+    .bodymain {
+        display: flex;
+        flex-wrap: wrap;
+        /* Allows wrapping for responsive design */
+        gap: 10px;
+        /* Adds spacing between the cards */
+    }
+
+    .subject-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 150px;
+        /* Fixed width */
+        height: 150px;
+        /* Fixed height */
+        text-align: center;
+    }
+
+    .subject-card img {
+        max-width: 90px;
+        /* Reduced width */
+        max-height: 90px;
+        /* Reduced height */
+        margin-bottom: 5px;
+    }
+
+    .subject-card p {
+        margin: 0;
+        font-size: 0.9rem;
+        font-weight: 550;
+        color: #333;
+        white-space: nowrap;
+        /* Prevents text from wrapping */
+        overflow: hidden;
+        /* Hides overflowed text */
+        text-overflow: ellipsis;
+        /* Adds '...' for overflowed text */
+        max-width: 100%;
+        /* Restrict the width of the text to its container */
+    }
+
+    .subject-card:hover {
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+<!-- CONTENT -->
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <!-- Left side: Back Button -->
+    <div>
+        <button {% if uid == '0' %} disabled {% endif %} class="btn btn-outline-primary d-flex align-items-center"
+            id="backButton" title="Go to Previous Page">
+            <i class="bi bi-arrow-left me-2"></i> Back
+        </button>
+    </div>
+
+    <!-- Right side: File Uploader and Create Folder -->
+    <div class="d-flex align-items-center">
+        <div class="uploader me-3">
+            <form id="fileUploadForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" id="fileInput" name="file" class="form-control">
+            </form>
+        </div>
+        <div class="uploader">
+            <a href="/profile/" class="btn btn-success">Create Folder</a>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Subject Cards -->
+<div class="container-fluid bodymain">
+
+    {% for c in context %}
+
+    <div class="subject-card">
+        {% if c.ftype == 'folder' %}
+        <!-- Folder Icon -->
+        <a href="{% url 'teachercloud' c.id %}">
+            <img src="/static/images/icon/folder.png" alt="{{ c.name }}">
+        </a>
+        {% elif c.ftype == 'jpg' or c.ftype == 'png' or c.ftype == 'jpeg' %}
+        <!-- Original Image as Icon -->
+        <a href="{{ c.file.url }}">
+            <img src="{{ c.file.url }}" alt="{{ c.name }}">
+        </a>
+        {% elif c.ftype == 'pdf' %}
+        <!-- PDF Icon -->
+        <a href="{{ c.file.url }}">
+            <img src="/static/images/icon/pdf.png" alt="{{ c.name }}">
+        </a>
+        {% elif c.ftype == 'vnd.openxmlformats-officedocument.wordprocessingml.document' or c.ftype == 'docx' %}
+        <!-- Word Document Icon -->
+        <a href="{{ c.file.url }}">
+            <img src="/static/images/icon/word.png" alt="{{ c.name }}">
+        </a>
+        {% elif c.ftype == 'csv' %}
+        <!-- Excel Document Icon -->
+        <a href="{{ c.file.url }}">
+            <img src="/static/images/icon/image.png" alt="{{ c.name }}">
+        </a>
+        {% elif c.ftype == 'plain' or c.ftype == 'text' or c.ftype == 'txt' %}
+        <!-- Text File Icon -->
+        <a href="{{ c.file.url }}">
+            <img src="/static/images/icon/txt.png" alt="{{ c.name }}">
+        </a>
+        {% elif c.ftype == 'zip' %}
+        <!-- ZIP File Icon -->
+        <a href="{{ c.file.url }}">
+            <img src="/static/images/icon/zip.png" alt="{{ c.name }}">
+        </a>
+        {% elif c.ftype == 'pptx' or c.ftype == 'vnd.openxmlformats-officedocument.presentationml.presentation' %}
+        <!-- PPT File Icon -->
+        <a href="{{ c.file.url }}">
+            <img src="/static/images/icon/pptx.png" alt="{{ c.name }}">
+        </a>
+        {% else %}
+        <!-- Default Icon for Unknown Types -->
+        <a href="{{ c.file.url }}">
+            <img src="/static/images/icon/default.png" alt="{{ c.name }}">
+        </a>
+        {% endif %}
+        <p title="{{ c.name }}">{{ c.name }}</p> <!-- Tooltip on hover -->
+    </div>
+
+
+    {% endfor %}
+
+</div>
+</div>
+{% endblock %}
+
+<!-- SCRIPT -->
+{% block script %}
+<script>
+    document.getElementById('fileInput').addEventListener('change', function () {
+        const form = document.getElementById('fileUploadForm');
+        const formData = new FormData(form);
+
+        // Send the file to the server using Fetch API
+        fetch('{% url "ajax_file_upload" dir_id=uid %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('File uploaded successfully!');
+                    // Optionally refresh the page or take another action
+                    location.reload();
+                } else {
+                    alert('File Exists or Invalid REQUEST');
+                }
+            })
+            .catch(error => {
+                console.error('Error uploading file:', error);
+                alert('File Exists or Invalid REQUEST');
+            });
+    });
+
+    document.getElementById('backButton').addEventListener('click', function () {
+        const uid = '{{ uid }}';  // Get the current uid
+
+        if (uid === '0') {
+            // If uid is '0', alert the user or do nothing
+        } else {
+            window.history.back(); // This will work if you're relying on browser history, but use custom logic if needed
+        }
+    });
+</script>
+{% endblock %}
