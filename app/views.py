@@ -25,7 +25,7 @@ def login_view(request):
             print(1)
             login(request, user)
             # Redirect to the dashboard page
-            return redirect('dashboard')  # Replace 'dashboard' with the actual URL or view name
+            return redirect('teachercloud', uid=0)  # Replace 'dashboard' with the actual URL or view name
         else:
             print(2)
             messages.error(request, "Invalid credentials, please try again.")
