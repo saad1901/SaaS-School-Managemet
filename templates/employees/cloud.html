@@ -152,7 +152,6 @@
         const form = document.getElementById('fileUploadForm');
         const formData = new FormData(form);
 
-        // Send the file to the server using Fetch API
         fetch('{% url "ajax_file_upload" dir_id=uid %}', {
             method: 'POST',
             body: formData,
@@ -162,16 +161,28 @@
         })
             .then(response => {
                 if (response.ok) {
-                    alert('File uploaded successfully!');
-                    // Optionally refresh the page or take another action
-                    location.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'File Uploaded!',
+                        text: 'Your file has been uploaded successfully.',
+                    }).then(() => {
+                        location.reload(); // Refresh the page
+                    });
                 } else {
-                    alert('File Exists or Invalid REQUEST');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Upload Failed',
+                        text: 'File already exists or the request is invalid.',
+                    });
                 }
             })
             .catch(error => {
                 console.error('Error uploading file:', error);
-                alert('File Exists or Invalid REQUEST');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Upload Failed',
+                    text: 'An error occurred while uploading the file.',
+                });
             });
     });
 
