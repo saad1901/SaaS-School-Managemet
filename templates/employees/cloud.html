@@ -96,42 +96,42 @@
         </a>
         {% elif c.ftype == 'jpg' or c.ftype == 'png' or c.ftype == 'jpeg' %}
         <!-- Original Image as Icon -->
-        <a href="{{ c.file.url }}">
+        <a target="_blank" href="{{ c.file.url }}">
             <img src="{{ c.file.url }}" alt="{{ c.name }}">
         </a>
         {% elif c.ftype == 'pdf' %}
         <!-- PDF Icon -->
-        <a href="{{ c.file.url }}">
+        <a target="_blank" href="{{ c.file.url }}">
             <img src="/static/images/icon/pdf.png" alt="{{ c.name }}">
         </a>
         {% elif c.ftype == 'vnd.openxmlformats-officedocument.wordprocessingml.document' or c.ftype == 'docx' %}
         <!-- Word Document Icon -->
-        <a href="{{ c.file.url }}">
+        <a target="_blank" href="{{ c.file.url }}">
             <img src="/static/images/icon/word.png" alt="{{ c.name }}">
         </a>
         {% elif c.ftype == 'csv' %}
         <!-- Excel Document Icon -->
-        <a href="{{ c.file.url }}">
+        <a target="_blank" href="{{ c.file.url }}">
             <img src="/static/images/icon/image.png" alt="{{ c.name }}">
         </a>
         {% elif c.ftype == 'plain' or c.ftype == 'text' or c.ftype == 'txt' %}
         <!-- Text File Icon -->
-        <a href="{{ c.file.url }}">
+        <a target="_blank" href="{{ c.file.url }}">
             <img src="/static/images/icon/txt.png" alt="{{ c.name }}">
         </a>
         {% elif c.ftype == 'zip' %}
         <!-- ZIP File Icon -->
-        <a href="{{ c.file.url }}">
+        <a target="_blank" href="{{ c.file.url }}">
             <img src="/static/images/icon/zip.png" alt="{{ c.name }}">
         </a>
         {% elif c.ftype == 'pptx' or c.ftype == 'vnd.openxmlformats-officedocument.presentationml.presentation' %}
         <!-- PPT File Icon -->
-        <a href="{{ c.file.url }}">
+        <a target="_blank" href="{{ c.file.url }}">
             <img src="/static/images/icon/pptx.png" alt="{{ c.name }}">
         </a>
         {% else %}
         <!-- Default Icon for Unknown Types -->
-        <a href="{{ c.file.url }}">
+        <a target="_blank" href="{{ c.file.url }}">
             <img src="/static/images/icon/default.png" alt="{{ c.name }}">
         </a>
         {% endif %}
