@@ -79,7 +79,7 @@
         <a href="{% url 'teachercloud' c.id %}">
             <img src="/static/images/icon/folder.png" alt="{{ c.name }}">
         </a>
-        {% elif c.ftype == 'jpg' or c.ftype == 'png' or c.ftype == 'jpeg' %}
+        {% elif c.ftype == 'jpg' or c.ftype == 'png' or c.ftype == 'jpeg' or c.ftype == 'webp' %}
         <!-- Original Image as Icon -->
         <a target="_blank" href="{{ c.file.url }}">
             <img src="{{ c.file.url }}" alt="{{ c.name }}">
@@ -94,7 +94,7 @@
         <a target="_blank" href="{{ c.file.url }}">
             <img src="/static/images/icon/word.png" alt="{{ c.name }}">
         </a>
-        {% elif c.ftype == 'csv' %}
+        {% elif c.ftype == 'csv' or c.ftype == 'vnd.openxmlformats-officedocument.spreadsheetml.sheet' %}
         <!-- Excel Document Icon -->
         <a target="_blank" href="{{ c.file.url }}">
             <img src="/static/images/icon/image.png" alt="{{ c.name }}">
@@ -108,6 +108,16 @@
         <!-- ZIP File Icon -->
         <a target="_blank" href="{{ c.file.url }}">
             <img src="/static/images/icon/zip.png" alt="{{ c.name }}">
+        </a>
+        {% elif c.ftype == 'mpeg'%}
+        <!-- Audio File Icon -->
+        <a target="_blank" href="{{ c.file.url }}">
+            <img src="/static/images/icon/audio.png" alt="{{ c.name }}">
+        </a>
+        {% elif c.ftype == 'octet-stream'%}
+        <!-- Audio File Icon -->
+        <a target="_blank" href="{{ c.file.url }}">
+            <img src="/static/images/icon/binary.png" alt="{{ c.name }}">
         </a>
         {% elif c.ftype == 'pptx' or c.ftype == 'vnd.openxmlformats-officedocument.presentationml.presentation' %}
         <!-- PPT File Icon -->
