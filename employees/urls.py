@@ -1,7 +1,6 @@
 from django.urls import path
 from . import views
-from django.conf.urls.static import static
-from django.conf import settings
+
 
 urlpatterns = [
     path('home', views.home, name='admin-home'),
@@ -20,4 +19,4 @@ urlpatterns = [
     path('teachers', views.teachers, name='teachers'),
     path('upload-file/<int:dir_id>', views.ajax_file_upload, name='ajax_file_upload'),
 
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]

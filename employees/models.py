@@ -66,10 +66,10 @@ class Users(AbstractBaseUser, PermissionsMixin):
 User = get_user_model()
 
 class Files(models.Model):
-    name = models.CharField(max_length=30)
-    ftype = models.CharField(max_length=15)
-    parent = models.CharField(max_length=30, blank=True, null=True)
-    file = models.FileField(upload_to='uploads/')  # Store files in 'uploads/' directory
+    name = models.CharField(max_length=60)
+    ftype = models.CharField(max_length=25)
+    parent = models.CharField(max_length=60, blank=True, null=True)
+    file = models.FileField(upload_to='uploads/', null=True, blank=True)  # Store files in 'uploads/' directory
     fk = models.ForeignKey(User, on_delete=models.CASCADE)
     def __str__(self):
         return self.name

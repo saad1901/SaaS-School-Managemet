@@ -10,9 +10,7 @@
     .bodymain {
         display: flex;
         flex-wrap: wrap;
-        /* Allows wrapping for responsive design */
         gap: 10px;
-        /* Adds spacing between the cards */
     }
 
     .subject-card {
@@ -21,17 +19,13 @@
         justify-content: center;
         align-items: center;
         width: 150px;
-        /* Fixed width */
         height: 150px;
-        /* Fixed height */
         text-align: center;
     }
 
     .subject-card img {
         max-width: 90px;
-        /* Reduced width */
         max-height: 90px;
-        /* Reduced height */
         margin-bottom: 5px;
     }
 
@@ -41,13 +35,9 @@
         font-weight: 550;
         color: #333;
         white-space: nowrap;
-        /* Prevents text from wrapping */
         overflow: hidden;
-        /* Hides overflowed text */
         text-overflow: ellipsis;
-        /* Adds '...' for overflowed text */
         max-width: 100%;
-        /* Restrict the width of the text to its container */
     }
 
     .subject-card:hover {
@@ -59,7 +49,6 @@
 <!-- CONTENT -->
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <!-- Left side: Back Button -->
     <div>
         <button {% if uid == '0' %} disabled {% endif %} class="btn btn-outline-primary d-flex align-items-center"
             id="backButton" title="Go to Previous Page">
@@ -67,7 +56,6 @@
         </button>
     </div>
 
-    <!-- Right side: File Uploader and Create Folder -->
     <div class="d-flex align-items-center">
         <div class="uploader me-3">
             <form id="fileUploadForm" enctype="multipart/form-data">
@@ -76,16 +64,13 @@
             </form>
         </div>
         <div class="uploader">
-            <a href="/profile/" class="btn btn-success">Create Folder</a>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createFolderModal">Create Folder</button>
         </div>
     </div>
 </div>
 
-
-
 <!-- Subject Cards -->
 <div class="container-fluid bodymain">
-
     {% for c in context %}
 
     <div class="subject-card">
@@ -140,11 +125,30 @@
 
 
     {% endfor %}
-
 </div>
-</div>
-{% endblock %}
 
+<!-- Create Folder Modal -->
+<div class="modal fade" id="createFolderModal" tabindex="-1" aria-labelledby="createFolderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createFolderModalLabel">Create New Folder</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="createFolderForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="folderName" class="form-label">Folder Name</label>
+                        <input type="text" id="folderName" name="folder_name" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock%}
 <!-- SCRIPT -->
 {% block script %}
 <script>
@@ -159,33 +163,25 @@
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
             },
         })
-            .then(response => {
-                if (response.ok) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'File Uploaded!',
-                        text: 'Your file has been uploaded successfully.',
-                    }).then(() => {
-                        location.reload(); // Refresh the page
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Upload Failed',
-                        text: 'File already exists or the request is invalid.',
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error uploading file:', error);
+        .then(response => {
+            if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'File Uploaded!',
+                    text: 'Your file has been uploaded successfully.',
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'Upload Failed',
-                    text: 'An error occurred while uploading the file.',
+                    text: 'File already exists or the request is invalid.',
                 });
-            });
+            }
+        })
+        .catch(error => console.error('Error uploading file:', error));
     });
-
     document.getElementById('backButton').addEventListener('click', function () {
         const uid = '{{ uid }}';  // Get the current uid
 

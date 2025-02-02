@@ -15,6 +15,15 @@ def dashboard(request):
 
 @user_passes_test(allusers)
 def admincloud(request,uid):
+    if request.method == 'POST':
+        if request.POST.get('folder_name'):
+            folder_name = request.POST.get('folder_name')
+            user = request.user
+            parent = uid
+            Files.objects.create(name=folder_name, ftype='folder', fk=user, parent=parent)
+        else:
+            return JsonResponse({'message': 'Something went Wrong.'}, status=400)
+    
     user = request.user
     files = Files.objects.filter(parent=uid, fk=user.id)
     path = 'root/'
