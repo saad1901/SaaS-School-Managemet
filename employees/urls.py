@@ -1,7 +1,6 @@
 from django.urls import path
 from . import views
 
-
 urlpatterns = [
     path('home', views.home, name='admin-home'),
     path('', views.dashboard, name='dashboard'),
@@ -15,7 +14,8 @@ urlpatterns = [
     path('', views.home, name='finance'),
     path('', views.home, name='settings'),
     path('', views.home, name='profile'),
-    path('', views.home, name='logout'),
+    # path('', views.logoutuser, name='logout'),
+    path('logout/', views.logoutuser, name='logout'),
     path('teachers', views.teachers, name='teachers'),
     path('upload-file/<int:dir_id>', views.ajax_file_upload, name='ajax_file_upload'),
 

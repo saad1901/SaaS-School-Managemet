@@ -4,7 +4,13 @@ from django.contrib.auth.decorators import user_passes_test,login_required
 from app.views import *
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import logout
 
+@user_passes_test(allusers)
+def logoutuser(request):
+    print(1)
+    logout(request)
+    return redirect('login_view')
 
 def home(request):
     return render(request, 'employees/base.html')
@@ -68,5 +74,3 @@ def ajax_file_upload(request, dir_id=None):
         })
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
-
-

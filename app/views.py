@@ -2,7 +2,6 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-
 def allusers(user):
     if user.role == 'Teacher' or user.role == 'Super Admin':
         return True
@@ -23,3 +22,5 @@ def login_view(request):
             print(2)
             messages.error(request, "Invalid credentials, please try again.")
     return render(request, 'landings/loginpage.html')
+
+
