@@ -13,21 +13,13 @@ def superadmin(user):
 
 def login_view(request):
     if request.method == 'POST':
-        # Get the data from the form
         email = request.POST.get('email')
         password = request.POST.get('password')
-        
-        print(email)
-        print(password)
-        # Authenticate the user
         user = authenticate(request, email=email, password=password)
         if user is not None:
-            print(1)
             login(request, user)
-            # Redirect to the dashboard page
-            return redirect('teachercloud', uid=0)  # Replace 'dashboard' with the actual URL or view name
+            return redirect('teachercloud', uid=0)
         else:
             print(2)
             messages.error(request, "Invalid credentials, please try again.")
-    
     return render(request, 'landings/loginpage.html')
