@@ -3,25 +3,25 @@
 <!-- STYLE -->
 {% block style %}
 <style>
-.topbar {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 20px;
-}
+    .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
 
-.topbar h1 {
-font-size: 1.5rem;
-font-weight: bold;
-}
+    .topbar h1 {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
 
-.action-buttons .btn {
-margin-left: 10px;
-}
+    .action-buttons .btn {
+        margin-left: 10px;
+    }
 
-.table-container {
-margin-top: 20px;
-}
+    .table-container {
+        margin-top: 20px;
+    }
 </style>
 {% endblock %}
 
@@ -34,7 +34,7 @@ margin-top: 20px;
 
         <div class="action-buttons">
             {% if user.role == 'Super Admin' %}
-            <button class="btn btn-primary">Add Teacher</button>
+            <a href="{% url 'addteacher' %}" class="btn btn-primary">Add Teacher</a>
             {% endif %}
 
             <button class="btn btn-outline-secondary">

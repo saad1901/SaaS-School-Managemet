@@ -158,7 +158,28 @@
         </div>
     </div>
 </div>
+
+<!-- Toast Container -->
+{% if message %}
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            {% if message_type == 'success' %}
+            <strong class="me-auto text-success">Success</strong>
+            {% else %}
+            <strong class="me-auto text-danger">Error</strong>
+            {% endif %}
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            {{ message }}
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {%endblock%}
+
 <!-- SCRIPT -->
 {% block script %}
 <script>
@@ -201,5 +222,15 @@
             window.history.back(); // This will work if you're relying on browser history, but use custom logic if needed
         }
     });
+
 </script>
+{% if message %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var toastEl = document.getElementById('liveToast');
+        var toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    });
+</script>
+{% endif %}
 {% endblock %}

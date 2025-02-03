@@ -11,6 +11,9 @@ def superadmin(user):
         return True
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -21,6 +24,7 @@ def login_view(request):
         else:
             print(2)
             messages.error(request, "Invalid credentials, please try again.")
+            
     return render(request, 'landings/loginpage.html')
 
 
