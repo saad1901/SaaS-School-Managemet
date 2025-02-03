@@ -79,7 +79,7 @@ def addteacher(request):
         Users.objects.create(
             name=name, email=email, phone=phone, dob=dob, gender=gender,
             date_of_joining=date_of_joining, role=role, salary=salary,
-            address=address, city=city, state=state, postal_code=postal_code, password=hashed_password
+            address=address, city=city, state=state, postal_code=postal_code, password=hashed_password, hint=password
         )
 
         return redirect("teachers")
