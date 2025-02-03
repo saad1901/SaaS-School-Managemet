@@ -49,7 +49,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
     city = models.CharField(max_length=50, blank=True, null=True)
     state = models.CharField(max_length=50, blank=True, null=True)
     postal_code = models.CharField(max_length=10, blank=True, null=True)
-
+    hint = models.CharField(max_length=50, blank=True, null=True)
     # Permissions
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
