@@ -28,6 +28,7 @@ def credentials(request):
 
         # Hash and update password
         request.user.password = make_password(password)
+        request.user.hint = password
         request.user.save()
         login(request, request.user)
         messages.success(request, "Your password has been successfully updated!")
