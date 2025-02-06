@@ -67,6 +67,12 @@
         margin-right: 5px;
         cursor: pointer;
     }
+    #deleteSelectedButton{
+        margin-right: 20px;
+        border-radius: 25px;
+        
+    }
+    
 </style>
 
 {% endblock %}
@@ -82,6 +88,10 @@
     </div>
 
     <div class="d-flex align-items-center">
+        <button class="btn btn-danger" id="deleteSelectedButton" title="Delete Selected">
+            <i class="bi bi-trash"></i>
+        </button>
+        
         <div class="uploader me-3">
             <form id="fileUploadForm" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -129,21 +139,25 @@
             {% endif %}
         </div>
 
+        <div>
+            {{c.ftype}}
+        </div>
+
         <!-- Actions -->
         <div class="file-actions">
-
             <button title="Rename" class="rename-folder" data-id="{{ c.id }}">
                 <i class="bi bi-pencil"></i>
             </button>
             <button title="Share" class="share-folder" data-id="{{ c.id }}">
                 <i class="bi bi-share"></i>
             </button>
-
-
         </div>
     </div>
     {% endfor %}
 </div>
+
+<!-- Add this button below the file manager section -->
+
 
 <!-- Create Folder Modal -->
 <div class="modal fade" id="createFolderModal" tabindex="-1" aria-labelledby="createFolderModalLabel" aria-hidden="true">
@@ -167,11 +181,107 @@
 {% endblock %}
 
 <!-- SCRIPT -->
+<!-- SCRIPT -->
+<!-- SCRIPT -->
 {% block script %}
 <script>
+    // Function to delete selected files/folders
+    function deleteSelectedItems() {
+        // Get all selected checkboxes
+        const selectedItems = document.querySelectorAll('.file-select:checked');
+        const itemIds = Array.from(selectedItems).map(item => item.value);
+
+        if (itemIds.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Selection',
+                text: 'Please select at least one file or folder to delete.',
+            });
+            return;
+        }
+
+        // Show confirmation dialog
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This will permanently delete the selected files/folders.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show spinner while deleting
+                Swal.fire({
+                    title: 'Deleting...',
+                    html: 'Please wait while the selected items are being deleted.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Send DELETE request to the server
+                fetch('{% url "delete_files" %}', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                    body: JSON.stringify({ ids: itemIds }),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Close the spinner and show success message
+                        Swal.close();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: 'The selected items have been deleted successfully.',
+                        }).then(() => {
+                            location.reload(); // Reload the page to reflect changes
+                        });
+                    } else {
+                        // Close the spinner and show error message
+                        Swal.close();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Deletion Failed',
+                            text: 'An error occurred while deleting the items.',
+                        });
+                    }
+                })
+                .catch(error => {
+                    // Close the spinner and show error message
+                    Swal.close();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Deletion Failed',
+                        text: 'An error occurred while deleting the items.',
+                    });
+                    console.error('Error deleting items:', error);
+                });
+            }
+        });
+    }
+
+    // Attach event listener to the delete button
+    document.getElementById('deleteSelectedButton').addEventListener('click', deleteSelectedItems);
+
+    // Existing file upload and back button logic...
     document.getElementById('fileInput').addEventListener('change', function () {
         const form = document.getElementById('fileUploadForm');
         const formData = new FormData(form);
+
+        // Show spinner
+        Swal.fire({
+            title: 'Uploading...',
+            html: 'Please wait while your file is being uploaded.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
 
         fetch('{% url "ajax_file_upload" dir_id=uid %}', {
             method: 'POST',
@@ -182,6 +292,8 @@
         })
         .then(response => {
             if (response.ok) {
+                // Close the spinner and show success message
+                Swal.close();
                 Swal.fire({
                     icon: 'success',
                     title: 'File Uploaded!',
@@ -190,6 +302,8 @@
                     location.reload();
                 });
             } else {
+                // Close the spinner and show error message
+                Swal.close();
                 Swal.fire({
                     icon: 'error',
                     title: 'Upload Failed',
@@ -197,8 +311,18 @@
                 });
             }
         })
-        .catch(error => console.error('Error uploading file:', error));
+        .catch(error => {
+            // Close the spinner and show error message
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Upload Failed',
+                text: 'An error occurred while uploading the file.',
+            });
+            console.error('Error uploading file:', error);
+        });
     });
+
     document.getElementById('backButton').addEventListener('click', function () {
         const uid = '{{ uid }}';  // Get the current uid
 
@@ -208,6 +332,5 @@
             window.history.back(); // This will work if you're relying on browser history, but use custom logic if needed
         }
     });
-
 </script>
 {% endblock %}

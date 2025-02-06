@@ -14,6 +14,7 @@ urlpatterns = [
     path('', views.home, name='settings'),
     path('profile', views.profile, name='profile'),
     path('profile/edit', views.profile_edit, name='profile_edit'),
+    path('profile/edit/<int:id>', views.profile_edit_admin, name='profile_edit_admin'),
     path('profile/edit/credentials', views.credentials, name='credentials'),
     path('delete_files', views.delete_files, name='delete_files'),
     path('addteacher', views.addteacher, name='addteacher'),
@@ -21,5 +22,6 @@ urlpatterns = [
     path('employees', views.teachers, name='employees'),
     path('teachercloud/<int:uid>', views.admincloud, name='teachercloud'),
     path('upload-file/<int:dir_id>', views.ajax_file_upload, name='ajax_file_upload'),
+    path('delete-files/', views.delete_files, name='delete_files'),
 
 ]

@@ -8,6 +8,8 @@ from django.contrib.auth import logout
 from django.contrib.auth.hashers import make_password
 from .forms import UserProfileForm
 from django.contrib import messages
+from django.views.decorators.http import require_http_methods
+from django.core.files.storage import default_storage
 
 @user_passes_test(allusers)
 def profile(request):
@@ -45,6 +47,18 @@ def profile_edit(request):
     else:
         form = UserProfileForm(instance=user)
     return render(request, 'employees/profile_edit.html', {'form': form})
+
+@user_passes_test(superadmin)
+def profile_edit_admin(request, id):
+    user = Users.objects.get(id=id)
+    if request.method == "POST":
+        form = UserProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('employees')
+    else:
+        form = UserProfileForm(instance=user)
+    return render(request, 'employees/profile_edit.html', {'form': form, 'id':id})
 
 
 
@@ -95,7 +109,7 @@ def admincloud(request, uid):
 @user_passes_test(allusers)
 def teachers(request):
     employees = Users.objects.all()
-    return render(request, 'employees/teachers.html' ,{'employees':employees})
+    return render(request, 'employees/staff.html' ,{'employees':employees})
 
 def generate_password():
     import random
@@ -132,7 +146,7 @@ def addteacher(request):
 
         return redirect("teachers")
 
-    return render(request, 'employees/addteacher.html')
+    return render(request, 'employees/addstaff.html')
 
 @user_passes_test(allusers)
 @csrf_exempt
@@ -165,3 +179,23 @@ def ajax_file_upload(request, dir_id=None):
         })
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@require_http_methods(["DELETE"])
+def delete_files(request):
+    if request.method == 'DELETE':
+        try:
+            import json
+            data = json.loads(request.body)
+            item_ids = data.get('ids', [])
+
+            for item_id in item_ids:
+                file = Files.objects.get(id=item_id)
+                # Delete the file from media storage
+                if file.file:
+                    default_storage.delete(file.file.path)
+                # Delete the file/folder from the database
+                file.delete()
+
+            return JsonResponse({'status': 'success'}, status=200)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
