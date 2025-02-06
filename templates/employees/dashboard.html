@@ -3,18 +3,20 @@
 <!-- STYLE -->
 {% block style %}
 <style>
-.cards{
-width: 300px;
-height: 120px;
-border: 1px solid black;
-border-radius: 5px;
-background-color: lightgrey;
-padding-top:15px;
-padding-left:15px;
-margin-left:20px;
-margin-top:20px;
-font-size:23px;
-}
+    .cards {
+        display: flex;
+        direction: row;
+        width: 300px;
+        height: 120px;
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: lightgrey;
+        padding-top: 15px;
+        padding-left: 15px;
+        margin-left: 20px;
+        margin-top: 20px;
+        font-size: 23px;
+    }
 </style>
 {% endblock %}
 
@@ -22,45 +24,22 @@ font-size:23px;
 {% block content %}
 
 <div class="container-fluid row">
-    <div class="cards">
-        <div>
-            <p>Total Students</p>
-        </div>
+    {% for class in classes %}
+    <a href="">
+        <div class="cards">
+            <div>
+                <p>{{class.name}} {{class.section}}</p>
+            </div>
 
-        <div>
-            <p>100</p>
+            <div>
+                <p>100</p>
+            </div>
         </div>
-    </div>
-    
-    <div class="cards">
-        <div>
-            <p>Total Students</p>
-        </div>
+    </a>
 
-        <div>
-            <p>100</p>
-        </div>
-    </div>
+    {% endfor %}
 
-    <div class="cards">
-        <div>
-            <p>Total Students</p>
-        </div>
 
-        <div>
-            <p>100</p>
-        </div>
-    </div>
-
-    <div class="cards">
-        <div>
-            <p>Total Students</p>
-        </div>
-
-        <div>
-            <p>100</p>
-        </div>
-    </div>
 
 </div>
 

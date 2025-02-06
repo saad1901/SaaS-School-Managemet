@@ -1,0 +1,59 @@
+icon logo : app
+hosp title name : app
+remove key img : code
+center the hosp logo : app
+password show : code
+hamburger icon : app
+
+top bar-
+remove "YOUR HOSP NAME"
+language button rm
+bed icon rm 
+chat rm
+
+dashboard-
+inr currency : code
+opd income , ipd income, general income rm -> instead Consultation Income : code
+calender timing should be 9am to 9pm
+
+APPOINTMENT IS FOR USERS / PATIENTS
+
+Billing-
+change discount % to optional
+remove LIVE CONSULTATION
+
+
+add patient-
+Number phone *req
+remove TPA TPA ID TPA validity Nat IDenT 
+age should be integer, DD MM YYYY, date format
+doctor fees $ to INR
+
+sidebar-
+change OPD TO CONSULTATION
+remove IPD
+duty roaster
+
+remove FRONT OFFICE
+remove Refferal
+
+Reports-
+change appointment to OPD consultation
+rm LOG AND OT
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

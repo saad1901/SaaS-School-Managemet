@@ -22,9 +22,9 @@ def login_view(request):
             login(request, user)
             return redirect('teachercloud', uid=0)
         else:
-            print(2)
-            messages.error(request, "Invalid credentials, please try again.")
+            return render(request, 'landings/loginpage.html', {'msg': 'Invalid credentials, please try again.'})
             
     return render(request, 'landings/loginpage.html')
+
 
 

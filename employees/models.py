@@ -53,15 +53,14 @@ class Users(AbstractBaseUser, PermissionsMixin):
     # Permissions
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-
+    # class_under = models.ForeignKey('Class', on_delete=models.SET_NULL, null=True, blank=True, related_name="employees")
     objects = EmployeeManager()
 
     USERNAME_FIELD = 'email'  # This defines the unique identifier for authentication
     REQUIRED_FIELDS = ['name']  # Fields required when creating a superuser
 
     def __str__(self):
-        return self.email
-
+        return self.name
 
 User = get_user_model()
 
@@ -73,3 +72,36 @@ class Files(models.Model):
     fk = models.ForeignKey(User, on_delete=models.CASCADE)
     def __str__(self):
         return self.name
+
+class Class(models.Model):
+    name = models.CharField(max_length=20)
+    section = models.CharField(max_length=15, blank=True, null=True)
+    monitor = models.ForeignKey(Users, on_delete=models.SET_NULL, null=True, blank=True)
+
+# class Student(models.Model):
+#     GENDER_CHOICES = [
+#         ('M', 'Male'),
+#         ('F', 'Female'),
+#         ('O', 'Other'),
+#     ]
+#     first_name = models.CharField(max_length=50)
+#     last_name = models.CharField(max_length=50)
+#     date_of_birth = models.DateField()
+#     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+#     email = models.EmailField(unique=True)
+#     phone_number = models.CharField(max_length=15, unique=True)
+#     address = models.TextField()
+#     admission_date = models.DateField(auto_now_add=True)
+#     class_name = models.CharField(max_length=20)
+#     roll_number = models.CharField(max_length=20, unique=True)
+#     guardian_name = models.CharField(max_length=100)
+#     guardian_contact = models.CharField(max_length=15)
+#     profile_picture = models.ImageField(upload_to='students/', blank=True, null=True)
+#     is_active = models.BooleanField(default=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+#     class_assigned = models.ForeignKey(Class, on_delete=models.CASCADE, related_name="students")
+    
+#     def __str__(self):
+#         return f"{self.first_name} {self.last_name} ({self.roll_number})"
+

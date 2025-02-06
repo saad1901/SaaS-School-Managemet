@@ -53,7 +53,9 @@
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Position</th>
+                    {% if user.role == 'Super Admin'%}
                     <th>Hint</th>
+                    {% endif %}
                     <th></th>
                 </tr>
             </thead>
@@ -65,7 +67,9 @@
                     <td>{{emp.email}}</td>
                     <td>{{emp.phone}}</td>
                     <td>{{emp.role}}</td>
+                    {% if user.role == 'Super Admin'%}
                     <td>{{emp.hint}}</td>
+                    {% endif %}
                     <td></td>
                 </tr>
                 {%endfor%}

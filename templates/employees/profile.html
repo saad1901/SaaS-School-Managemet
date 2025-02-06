@@ -1,0 +1,71 @@
+{% extends 'employees/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg p-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>Employee Profile</h2>
+            <a href="{% url 'profile_edit' %}" class="btn btn-danger">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+        </div>
+        <hr>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Name:</h5>
+                <p>{{ user.name }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Email:</h5>
+                <p>{{ user.email }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Phone:</h5>
+                <p>{{ user.phone|default:"Not Provided" }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Date of Birth:</h5>
+                <p>{{ user.dob|default:"Not Provided" }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Gender:</h5>
+                <p>{{ user.get_gender_display }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Date of Joining:</h5>
+                <p>{{ user.date_of_joining|default:"Not Provided" }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Role:</h5>
+                <p>{{ user.role }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Salary:</h5>
+                <p>₹{{ user.salary|default:"Not Provided" }}</p>
+            </div>
+        </div>
+
+        <h4 class="mt-4">Address Information</h4>
+        <hr>
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Address:</h5>
+                <p>{{ user.address|default:"Not Provided" }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>City:</h5>
+                <p>{{ user.city|default:"Not Provided" }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>State:</h5>
+                <p>{{ user.state|default:"Not Provided" }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5>Postal Code:</h5>
+                <p>{{ user.postal_code|default:"Not Provided" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

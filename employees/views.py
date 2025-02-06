@@ -6,6 +6,48 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout
 from django.contrib.auth.hashers import make_password
+from .forms import UserProfileForm
+from django.contrib import messages
+
+
+@user_passes_test(allusers)
+def profile(request):
+    return render(request, 'employees/profile.html')
+
+@user_passes_test(allusers)
+def credentials(request):
+    if request.method == 'POST':
+        password = request.POST.get('password')
+
+        # Validate password length and complexity (Optional)
+        if len(password) < 8 or not any(char.isdigit() for char in password) \
+           or not any(char.islower() for char in password) \
+           or not any(char.isupper() for char in password):
+            messages.error(request, "Password must contain at least 8 characters, one uppercase, one lowercase, and one number.")
+            return render(request, 'employees/credentials.html')
+
+        # Hash and update password
+        request.user.password = make_password(password)
+        request.user.save()
+        login(request, request.user)
+        messages.success(request, "Your password has been successfully updated!")
+
+    return render(request, 'employees/credentials.html')
+
+
+@user_passes_test(allusers)
+def profile_edit(request):
+    user = request.user
+    if request.method == "POST":
+        form = UserProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')  # Redirect to profile page after saving
+    else:
+        form = UserProfileForm(instance=user)
+    return render(request, 'employees/profile_edit.html', {'form': form})
+
+
 
 
 @user_passes_test(allusers)
@@ -21,7 +63,11 @@ def home(request):
 
 @user_passes_test(allusers)
 def dashboard(request):
-    return render(request, 'employees/dashboard.html')
+    classes = []
+    if request.user.role == 'Teacher':
+        # return render(request, 'employees/superadmin_dashboard.html')
+        classes = Class.objects.filter(monitor=request.user)
+    return render(request, 'employees/dashboard.html', {'classes': classes})
 
 
 @user_passes_test(allusers)
@@ -41,10 +87,10 @@ def admincloud(request, uid):
             else:
                 message = 'Folder already exists or invalid data provided.'
                 message_type = 'error'
-                return render(request, 'employees/cloud.html', 
+                return render(request, 'employees/cloudtest.html', 
                             {'context': files, 'uid': uid, 'message': message, 'message_type': message_type})
 
-    return render(request, 'employees/cloud.html', 
+    return render(request, 'employees/cloudtest.html', 
                 {'context': files, 'uid': uid, 'message': message, 'message_type': message_type})
 
 @user_passes_test(allusers)
@@ -57,6 +103,9 @@ def generate_password():
     import string
     return ''.join(random.choices(string.ascii_letters + string.digits, k=8))
     
+
+def delete_files(request):
+    pass
 
 @user_passes_test(superadmin)
 def addteacher(request):

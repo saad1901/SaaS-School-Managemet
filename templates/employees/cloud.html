@@ -224,13 +224,5 @@
     });
 
 </script>
-{% if message %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var toastEl = document.getElementById('liveToast');
-        var toast = new bootstrap.Toast(toastEl);
-        toast.show();
-    });
-</script>
-{% endif %}
+
 {% endblock %}

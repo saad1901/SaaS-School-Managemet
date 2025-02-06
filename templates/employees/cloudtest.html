@@ -1,0 +1,213 @@
+{% extends 'employees/base.html' %}
+
+<!-- STYLE -->
+{% block style %}
+<style>
+    .file-manager {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .file-item {
+        display: flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-bottom: 1px solid #ddd;
+        justify-content: space-between;
+        transition: 0.2s;
+    }
+
+    .file-item:hover {
+        background: #adadad;
+    }
+
+    .file-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-grow: 1;
+    }
+
+    .file-icon {
+        width: 28px;
+        height: 28px;
+    }
+
+    .file-name {
+        font-size: 0.9rem;
+        color: #333;
+        flex-grow: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .file-actions {
+        display: flex;
+        gap: 5px;
+    }
+
+    .file-actions button {
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 2px;
+        color: #555;
+    }
+
+    .file-actions button:hover {
+        color: #007bff;
+    }
+
+    .file-select {
+        width: 14px;
+        height: 14px;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+</style>
+
+{% endblock %}
+
+<!-- CONTENT -->
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <button {% if uid == '0' %} disabled {% endif %} class="btn btn-outline-primary d-flex align-items-center"
+            id="backButton" title="Go to Previous Page">
+            <i class="bi bi-arrow-left me-2"></i> Back
+        </button>
+    </div>
+
+    <div class="d-flex align-items-center">
+        <div class="uploader me-3">
+            <form id="fileUploadForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" id="fileInput" name="file" class="form-control">
+            </form>
+        </div>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createFolderModal">Create Folder</button>
+    </div>
+</div>
+
+<!-- File Manager -->
+<div class="container file-manager">
+    {% for c in context %}
+    <div class="file-item">
+        <input type="checkbox" class="file-select" value="{{ c.id }}">
+
+        <div class="file-info">
+            {% if c.ftype == 'folder' %}
+            <img src="/static/images/icon/folder.png" class="file-icon" alt="Folder">
+            <a href="{% url 'teachercloud' c.id %}" class="file-name">{{ c.name }}</a>
+            {% elif c.ftype in 'jpg png jpeg webp' %}
+            <img src="{{ c.file.url }}" class="file-icon" alt="Image">
+            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+            {% elif c.ftype == 'pdf' %}
+            <img src="/static/images/icon/pdf.png" class="file-icon" alt="PDF">
+            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+            {% elif c.ftype in 'docx vnd.openxmlformats-officedocument.wordprocessingml.document' %}
+            <img src="/static/images/icon/word.png" class="file-icon" alt="Word Document">
+            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+            {% elif c.ftype in 'csv vnd.openxmlformats-officedocument.spreadsheetml.sheet' %}
+            <img src="/static/images/icon/excel.png" class="file-icon" alt="Excel">
+            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+            {% elif c.ftype in 'pptx vnd.openxmlformats-officedocument.presentationml.presentation' %}
+            <img src="/static/images/icon/pptx.png" class="file-icon" alt="PowerPoint">
+            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+            {% elif c.ftype == 'zip' %}
+            <img src="/static/images/icon/zip.png" class="file-icon" alt="ZIP">
+            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+            {% elif c.ftype == 'mpeg' %}
+            <img src="/static/images/icon/audio.png" class="file-icon" alt="Audio">
+            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+            {% else %}
+            <img src="/static/images/icon/default.png" class="file-icon" alt="File">
+            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+            {% endif %}
+        </div>
+
+        <!-- Actions -->
+        <div class="file-actions">
+
+            <button title="Rename" class="rename-folder" data-id="{{ c.id }}">
+                <i class="bi bi-pencil"></i>
+            </button>
+            <button title="Share" class="share-folder" data-id="{{ c.id }}">
+                <i class="bi bi-share"></i>
+            </button>
+
+
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Create Folder Modal -->
+<div class="modal fade" id="createFolderModal" tabindex="-1" aria-labelledby="createFolderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Folder</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="createFolderForm">
+                    {% csrf_token %}
+                    <label for="folderName">Folder Name</label>
+                    <input type="text" id="folderName" name="folder_name" class="form-control" required>
+                    <button type="submit" class="btn btn-primary mt-2">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<!-- SCRIPT -->
+{% block script %}
+<script>
+    document.getElementById('fileInput').addEventListener('change', function () {
+        const form = document.getElementById('fileUploadForm');
+        const formData = new FormData(form);
+
+        fetch('{% url "ajax_file_upload" dir_id=uid %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'File Uploaded!',
+                    text: 'Your file has been uploaded successfully.',
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Upload Failed',
+                    text: 'File already exists or the request is invalid.',
+                });
+            }
+        })
+        .catch(error => console.error('Error uploading file:', error));
+    });
+    document.getElementById('backButton').addEventListener('click', function () {
+        const uid = '{{ uid }}';  // Get the current uid
+
+        if (uid === '0') {
+            // If uid is '0', alert the user or do nothing
+        } else {
+            window.history.back(); // This will work if you're relying on browser history, but use custom logic if needed
+        }
+    });
+
+</script>
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Users, Files
+from .models import Users, Files, Class
 
 class EmployeeAdmin(UserAdmin):
     # Display fields in the admin panel
@@ -26,3 +26,4 @@ class EmployeeAdmin(UserAdmin):
 
 admin.site.register(Users, EmployeeAdmin)
 admin.site.register(Files)
+admin.site.register(Class)
