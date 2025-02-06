@@ -3,93 +3,106 @@
 <!-- STYLE -->
 {% block style %}
 <style>
+    /* Overall form container */
     .form-container {
-        max-width: 700px;
-        margin: 30px auto;
-        padding: 25px;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 40px;
         background: #ffffff;
-        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     }
 
+    /* Title Styling */
     h2 {
         text-align: center;
-        margin-bottom: 20px;
-        font-size: 24px;
+        font-size: 26px;
+        margin-bottom: 25px;
         color: #333;
     }
 
-    .form-row {
-        display: flex;
-        gap: 20px;
-    }
-
+    /* Form Group Styling */
     .form-group {
-        flex: 1;
-        margin-bottom: 18px;
-        display: flex;
-        flex-direction: column;
+        margin-bottom: 20px;
     }
 
-    label {
-        font-weight: 500;
-        margin-bottom: 6px;
-        color: #444;
-        font-size: 14px;
+    .form-group label {
+        display: block;
+        font-size: 16px;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 8px;
     }
 
-    input, select, textarea {
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
         width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 14px;
-        transition: 0.3s ease-in-out;
+        padding: 12px;
+        font-size: 15px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        transition: border 0.3s ease-in-out;
     }
 
-    input:focus, select:focus, textarea:focus {
+    /* Focus Effect */
+    .form-group input:focus, 
+    .form-group select:focus, 
+    .form-group textarea:focus {
         border-color: #007bff;
         outline: none;
-        box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.3);
     }
 
-    .checkbox-group {
-        display: flex;
-        gap: 15px;
-        align-items: center;
-        margin-top: 10px;
-    }
-
-    .checkbox-group label {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 14px;
-        color: #555;
+    /* Buttons */
+    .btn-success, .btn-cancel {
+        padding: 12px 25px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        display: inline-block;
+        text-align: center;
+        text-decoration: none;
     }
 
     .btn-success {
-        padding: 10px 20px;
-        font-size: 14px;
-        font-weight: 600;
         background-color: #28a745;
         color: white;
-        border: none;
-        border-radius: 5px;
-        transition: 0.3s ease-in-out;
-        cursor: pointer;
-        display: block;
-        margin: 20px auto 0;
+        margin-top: 20px;
     }
 
     .btn-success:hover {
         background-color: #218838;
     }
 
+    .btn-cancel {
+        background-color: #f8f9fa;
+        color: #333;
+        border: 1px solid #ccc;
+        margin-top: 20px;
+    }
+
+    .btn-cancel:hover {
+        background-color: #e2e6ea;
+    }
+
+    /* Form Layout */
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .form-row .form-group {
+        margin-bottom: 10px;
+    }
+
+    /* Adjusting layout on smaller screens */
     @media (max-width: 768px) {
         .form-row {
-            flex-direction: column;
+            grid-template-columns: 1fr;
         }
     }
 </style>
@@ -123,7 +136,6 @@
             <div class="form-group">
                 <label for="dob">Date of Birth</label>
                 <input type="date" id="dob" name="dob" required>
-
             </div>
         </div>
 
@@ -181,7 +193,8 @@
             <input type="text" id="postal_code" name="postal_code">
         </div>
 
-        <button class="btn btn-success" type="submit">Submit</button>
+        <button class="btn-success" type="submit">Submit</button>
+        <a href="employees" class="btn-cancel">Cancel</a>
     </form>
 </div>
 {% endblock %}

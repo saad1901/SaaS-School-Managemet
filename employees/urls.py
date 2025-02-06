@@ -18,7 +18,7 @@ urlpatterns = [
     path('delete_files', views.delete_files, name='delete_files'),
     path('addteacher', views.addteacher, name='addteacher'),
     path('logout', views.logoutuser, name='logout'),
-    path('teachers', views.teachers, name='teachers'),
+    path('employees', views.teachers, name='employees'),
     path('teachercloud/<int:uid>', views.admincloud, name='teachercloud'),
     path('upload-file/<int:dir_id>', views.ajax_file_upload, name='ajax_file_upload'),
 

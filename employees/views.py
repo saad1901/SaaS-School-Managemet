@@ -9,7 +9,6 @@ from django.contrib.auth.hashers import make_password
 from .forms import UserProfileForm
 from django.contrib import messages
 
-
 @user_passes_test(allusers)
 def profile(request):
     return render(request, 'employees/profile.html')
@@ -26,7 +25,6 @@ def credentials(request):
             messages.error(request, "Password must contain at least 8 characters, one uppercase, one lowercase, and one number.")
             return render(request, 'employees/credentials.html')
 
-        # Hash and update password
         request.user.password = make_password(password)
         request.user.hint = password
         request.user.save()
