@@ -46,7 +46,7 @@ def profile_edit(request):
             return redirect('profile')  # Redirect to profile page after saving
     else:
         form = UserProfileForm(instance=user)
-    return render(request, 'employees/profile_edit.html', {'form': form})
+    return render(request, 'employees/profile_edit.html', {'form': form,'id':user.id})
 
 @user_passes_test(superadmin)
 def profile_edit_admin(request, id):
