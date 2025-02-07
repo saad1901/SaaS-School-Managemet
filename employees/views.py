@@ -10,6 +10,7 @@ from .forms import UserProfileForm
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods
 from django.core.files.storage import default_storage
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 @user_passes_test(allusers)
 def profile(request):
@@ -152,6 +153,12 @@ def addteacher(request):
 @csrf_exempt
 def ajax_file_upload(request, dir_id=None):
     if request.method == 'POST' and request.FILES.get('file'):
+        uploaded_file: InMemoryUploadedFile = request.FILES['file']
+        max_size = 100 * 1024 * 1024
+
+        if uploaded_file.size > max_size:
+            return JsonResponse({'message': 'File size must be less than 100MB.'}, status=400)
+            
         file_obj = request.FILES['file']
         file_name = file_obj.name
         file_type = file_obj.content_type.split('/')[1]
