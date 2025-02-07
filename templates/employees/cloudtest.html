@@ -122,7 +122,7 @@
             <img src="/static/images/icon/word.png" class="file-icon" alt="Word Document">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
             {% elif c.ftype in 'csv vnd.openxmlformats-officedocument.spreadsheetml.sheet' %}
-            <img src="/static/images/icon/excel.png" class="file-icon" alt="Excel">
+            <img src="/static/images/icon/csv.png" class="file-icon" alt="Excel">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
             {% elif c.ftype in 'pptx vnd.openxmlformats-officedocument.presentationml.presentation' %}
             <img src="/static/images/icon/pptx.png" class="file-icon" alt="PowerPoint">
@@ -130,9 +130,40 @@
             {% elif c.ftype == 'zip' %}
             <img src="/static/images/icon/zip.png" class="file-icon" alt="ZIP">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+            
             {% elif c.ftype == 'mpeg' %}
             <img src="/static/images/icon/audio.png" class="file-icon" alt="Audio">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+            
+            {% elif c.name|slice:"-4:" == ".cpp" or c.name|slice:"-4:" == ".php" or c.name|slice:"-4:" == ".zip" or c.name|slice:"-4:" == ".sql" or c.name|slice:"-4:" == ".exe" or c.name|slice:"-4:" == ".css" %}
+            <img src="/static/images/icon/{{c.name|slice:"-3:"}}.png" class="file-icon" alt="3X-Code">
+            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+
+            {% elif c.name|slice:"-8:" == ".sqlite3" %}
+            <img src="/static/images/icon/sql.png" class="file-icon" alt="SQLlite3-Code">
+            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+
+            {% elif c.name|slice:"-2:" == ".c" %}
+            <img src="/static/images/icon/c.png" class="file-icon" alt="C-Code">
+            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+
+            {% elif c.name|slice:"-3:" == ".py" or c.name|slice:"-3:" == ".js"%}
+            <img src="/static/images/icon/{{c.name|slice:"-2:"}}.png" class="file-icon" alt="Python-JS-Code">
+            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+
+            {% elif c.name|slice:"-4:" == ".txt" %}
+            <img src="/static/images/icon/txt.png" class="file-icon" alt="Txt-Code">
+            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+
+            {% elif c.name|slice:"-5:" == ".html" %}
+            <img src="/static/images/icon/html.png" class="file-icon" alt="HTML-Code">
+            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+
+            {% elif c.name|slice:"-4:" == ".wmv" or c.name|slice:"-4:" == ".MP4" or c.name|slice:"-4:" == ".mp4" %}
+            <img src="/static/images/icon/video.png" class="file-icon" alt="HTML-Code">
+            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+          
+
             {% else %}
             <img src="/static/images/icon/default.png" class="file-icon" alt="File">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
@@ -176,8 +207,6 @@
 </div>
 {% endblock %}
 
-<!-- SCRIPT -->
-<!-- SCRIPT -->
 <!-- SCRIPT -->
 {% block script %}
 <script>
