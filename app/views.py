@@ -2,9 +2,11 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
+
 def allusers(user):
     if user.role == 'Teacher' or user.role == 'Super Admin':
         return True
+
 
 def superadmin(user):
     if user.role == 'Super Admin':

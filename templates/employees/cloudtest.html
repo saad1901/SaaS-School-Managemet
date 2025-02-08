@@ -1,5 +1,5 @@
 {% extends 'employees/base.html' %}
-
+{% load static %}
 <!-- STYLE -->
 {% block style %}
 <style>
@@ -67,12 +67,16 @@
         margin-right: 5px;
         cursor: pointer;
     }
-    #deleteSelectedButton{
+
+    #deleteSelectedButton {
         margin-right: 20px;
         border-radius: 25px;
-        
+
     }
-    
+
+    .foldericon {
+        margin-left: 19px;
+    }
 </style>
 
 {% endblock %}
@@ -81,24 +85,27 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
+        {% if uid != '0' %}
         <button {% if uid == '0' %} disabled {% endif %} class="btn btn-outline-primary d-flex align-items-center"
             id="backButton" title="Go to Previous Page">
             <i class="bi bi-arrow-left me-2"></i> Back
         </button>
+        {% endif %}
     </div>
 
     <div class="d-flex align-items-center">
         <button class="btn btn-danger" id="deleteSelectedButton" title="Delete Selected">
             <i class="bi bi-trash"></i>
         </button>
-        
+
         <div class="uploader me-3">
             <form id="fileUploadForm" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input type="file" id="fileInput" name="file" class="form-control">
             </form>
         </div>
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createFolderModal">Create Folder</button>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createFolderModal">Create
+            Folder</button>
     </div>
 </div>
 
@@ -106,72 +113,85 @@
 <div class="container file-manager">
     {% for c in context %}
     <div class="file-item">
+        {% if c.ftype != 'folder' %}
         <input type="checkbox" class="file-select" value="{{ c.id }}">
+        {% endif %}
 
         <div class="file-info">
             {% if c.ftype == 'folder' %}
-            <img src="/static/images/icon/folder.png" class="file-icon" alt="Folder">
+            <img src="{% static 'images/icon/folder.png' %}" class="file-icon foldericon" alt="Folder">
             <a href="{% url 'teachercloud' c.id %}" class="file-name">{{ c.name }}</a>
+
             {% elif c.ftype in 'jpg png jpeg webp' %}
             <img src="{{ c.file.url }}" class="file-icon" alt="Image">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+
             {% elif c.ftype == 'pdf' %}
-            <img src="/static/images/icon/pdf.png" class="file-icon" alt="PDF">
+            <img src="{% static 'images/icon/pdf.png' %}" class="file-icon" alt="PDF">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+
             {% elif c.ftype in 'docx vnd.openxmlformats-officedocument.wordprocessingml.document' %}
-            <img src="/static/images/icon/word.png" class="file-icon" alt="Word Document">
+            <img src="{% static 'images/icon/word.png' %}" class="file-icon" alt="Word Document">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+
             {% elif c.ftype in 'csv vnd.openxmlformats-officedocument.spreadsheetml.sheet' %}
-            <img src="/static/images/icon/csv.png" class="file-icon" alt="Excel">
+            <img src="{% static 'images/icon/csv.png' %}" class="file-icon" alt="Excel">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+
             {% elif c.ftype in 'pptx vnd.openxmlformats-officedocument.presentationml.presentation' %}
-            <img src="/static/images/icon/pptx.png" class="file-icon" alt="PowerPoint">
+            <img src="{% static 'images/icon/pptx.png' %}" class="file-icon" alt="PowerPoint">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
+
             {% elif c.ftype == 'zip' %}
-            <img src="/static/images/icon/zip.png" class="file-icon" alt="ZIP">
+            <img src="{% static 'images/icon/zip.png' %}" class="file-icon" alt="ZIP">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-            
+
             {% elif c.ftype == 'mpeg' %}
-            <img src="/static/images/icon/audio.png" class="file-icon" alt="Audio">
+            <img src="{% static 'images/icon/audio.png' %}" class="file-icon" alt="Audio">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-            
+
             {% elif c.name|slice:"-4:" == ".cpp" or c.name|slice:"-4:" == ".php" or c.name|slice:"-4:" == ".zip" or c.name|slice:"-4:" == ".sql" or c.name|slice:"-4:" == ".exe" or c.name|slice:"-4:" == ".css" %}
-            <img src="/static/images/icon/{{c.name|slice:"-3:"}}.png" class="file-icon" alt="3X-Code">
+            <img src="{% static 'images/icon/' %}{{ c.name|slice:'-3:' }}.png" class="file-icon" alt="3X-Code">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
 
             {% elif c.name|slice:"-8:" == ".sqlite3" %}
-            <img src="/static/images/icon/sql.png" class="file-icon" alt="SQLlite3-Code">
+            <img src="{% static 'images/icon/sql.png' %}" class="file-icon" alt="SQLite3-Code">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
 
             {% elif c.name|slice:"-2:" == ".c" %}
-            <img src="/static/images/icon/c.png" class="file-icon" alt="C-Code">
+            <img src="{% static 'images/icon/c.png' %}" class="file-icon" alt="C-Code">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
 
             {% elif c.name|slice:"-3:" == ".py" or c.name|slice:"-3:" == ".js"%}
-            <img src="/static/images/icon/{{c.name|slice:"-2:"}}.png" class="file-icon" alt="Python-JS-Code">
+            <img src="{% static 'images/icon/' %}{{ c.name|slice:'-2:' }}.png" class="file-icon" alt="Python-JS-Code">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
 
             {% elif c.name|slice:"-4:" == ".txt" %}
-            <img src="/static/images/icon/txt.png" class="file-icon" alt="Txt-Code">
+            <img src="{% static 'images/icon/txt.png' %}" class="file-icon" alt="Text File">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
 
             {% elif c.name|slice:"-5:" == ".html" %}
-            <img src="/static/images/icon/html.png" class="file-icon" alt="HTML-Code">
+            <img src="{% static 'images/icon/html.png' %}" class="file-icon" alt="HTML File">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
 
             {% elif c.name|slice:"-4:" == ".wmv" or c.name|slice:"-4:" == ".MP4" or c.name|slice:"-4:" == ".mp4" %}
-            <img src="/static/images/icon/video.png" class="file-icon" alt="HTML-Code">
+            <img src="{% static 'images/icon/video.png' %}" class="file-icon" alt="Video File">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-          
 
             {% else %}
-            <img src="/static/images/icon/default.png" class="file-icon" alt="File">
+            <img src="{% static 'images/icon/default.png' %}" class="file-icon" alt="File">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
             {% endif %}
         </div>
 
+
         <!-- Actions -->
         <div class="file-actions">
+            {% if c.ftype == 'folder' %}
+            <button title="Delete" class="Delete-folder" data-id="{{ c.id }}">
+                <i class="bi bi-trash"></i>
+            </button>
+            {% endif %}
             <button title="Rename" class="rename-folder" data-id="{{ c.id }}">
                 <i class="bi bi-pencil"></i>
             </button>
@@ -187,7 +207,8 @@
 
 
 <!-- Create Folder Modal -->
-<div class="modal fade" id="createFolderModal" tabindex="-1" aria-labelledby="createFolderModalLabel" aria-hidden="true">
+<div class="modal fade" id="createFolderModal" tabindex="-1" aria-labelledby="createFolderModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -210,7 +231,6 @@
 <!-- SCRIPT -->
 {% block script %}
 <script>
-    // Function to delete selected files/folders
     function deleteSelectedItems() {
         // Get all selected checkboxes
         const selectedItems = document.querySelectorAll('.file-select:checked');
@@ -255,18 +275,28 @@
                     },
                     body: JSON.stringify({ ids: itemIds }),
                 })
-                .then(response => {
-                    if (response.ok) {
-                        // Close the spinner and show success message
-                        Swal.close();
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Deleted!',
-                            text: 'The selected items have been deleted successfully.',
-                        }).then(() => {
-                            location.reload(); // Reload the page to reflect changes
-                        });
-                    } else {
+                    .then(response => {
+                        if (response.ok) {
+                            // Close the spinner and show success message
+                            Swal.close();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: 'The selected items have been deleted successfully.',
+                            }).then(() => {
+                                location.reload(); // Reload the page to reflect changes
+                            });
+                        } else {
+                            // Close the spinner and show error message
+                            Swal.close();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Deletion Failed',
+                                text: 'An error occurred while deleting the items.',
+                            });
+                        }
+                    })
+                    .catch(error => {
                         // Close the spinner and show error message
                         Swal.close();
                         Swal.fire({
@@ -274,18 +304,8 @@
                             title: 'Deletion Failed',
                             text: 'An error occurred while deleting the items.',
                         });
-                    }
-                })
-                .catch(error => {
-                    // Close the spinner and show error message
-                    Swal.close();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Deletion Failed',
-                        text: 'An error occurred while deleting the items.',
+                        console.error('Error deleting items:', error);
                     });
-                    console.error('Error deleting items:', error);
-                });
             }
         });
     }
@@ -302,60 +322,60 @@
             alert("File size must be 100MB or smaller.");
             this.value = ''; // Clear the file input
         }
-        else{
+        else {
 
-        
-        const form = document.getElementById('fileUploadForm');
-        const formData = new FormData(form);
 
-        // Show spinner
-        Swal.fire({
-            title: 'Uploading...',
-            html: 'Please wait while your file is being uploaded.',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
+            const form = document.getElementById('fileUploadForm');
+            const formData = new FormData(form);
 
-        fetch('{% url "ajax_file_upload" dir_id=uid %}', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-            },
-        })
-        .then(response => {
-            if (response.ok) {
-                // Close the spinner and show success message
-                Swal.close();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'File Uploaded!',
-                    text: 'Your file has been uploaded successfully.',
-                }).then(() => {
-                    location.reload();
-                });
-            } else {
-                // Close the spinner and show error message
-                Swal.close();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Upload Failed',
-                    text: 'File already exists or the request is invalid.',
-                });
-            }
-        })
-        .catch(error => {
-            // Close the spinner and show error message
-            Swal.close();
+            // Show spinner
             Swal.fire({
-                icon: 'error',
-                title: 'Upload Failed',
-                text: 'An error occurred while uploading the file.',
+                title: 'Uploading...',
+                html: 'Please wait while your file is being uploaded.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
             });
-            console.error('Error uploading file:', error);
-        });
+
+            fetch('{% url "ajax_file_upload" dir_id=uid %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                },
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Close the spinner and show success message
+                        Swal.close();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'File Uploaded!',
+                            text: 'Your file has been uploaded successfully.',
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        // Close the spinner and show error message
+                        Swal.close();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Upload Failed',
+                            text: 'File already exists or the request is invalid.',
+                        });
+                    }
+                })
+                .catch(error => {
+                    // Close the spinner and show error message
+                    Swal.close();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Upload Failed',
+                        text: 'An error occurred while uploading the file.',
+                    });
+                    console.error('Error uploading file:', error);
+                });
         }
     });
 
@@ -367,6 +387,19 @@
         } else {
             window.history.back(); // This will work if you're relying on browser history, but use custom logic if needed
         }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".Delete-folder").forEach(button => {
+            button.addEventListener("click", function () {
+                let folderId = this.getAttribute("data-id");
+                if (confirm("Are you sure you want to delete this folder?")) {
+                    // Django URL with JavaScript
+                    let deleteUrl = "{% url 'delete_folder' 0 %}".replace("0", folderId);
+                    window.location.href = deleteUrl;
+                }
+            });
+        });
     });
 </script>
 {% endblock %}

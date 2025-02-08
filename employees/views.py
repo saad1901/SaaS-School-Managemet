@@ -12,12 +12,18 @@ from django.views.decorators.http import require_http_methods
 from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
+@login_required
 @user_passes_test(allusers)
 def profile(request):
     return render(request, 'employees/profile.html')
 
+@login_required
 @user_passes_test(allusers)
-def credentials(request):
+def credentials(request, id):
+    print('credentials id = ', id)
+    user = Users.objects.get(id=id)
+
+    print('credentials name = ', user.name)
     if request.method == 'POST':
         password = request.POST.get('password')
 
@@ -28,15 +34,16 @@ def credentials(request):
             messages.error(request, "Password must contain at least 8 characters, one uppercase, one lowercase, and one number.")
             return render(request, 'employees/credentials.html')
 
-        request.user.password = make_password(password)
-        request.user.hint = password
-        request.user.save()
-        login(request, request.user)
+        user.password = make_password(password)
+        user.hint = password
+        user.save()
+        if id == request.user.id:
+            login(request, request.user)
         messages.success(request, "Your password has been successfully updated!")
 
-    return render(request, 'employees/credentials.html')
+    return render(request, 'employees/credentials.html', {'user':user,'id': id})
 
-
+@login_required
 @user_passes_test(allusers)
 def profile_edit(request):
     user = request.user
@@ -44,11 +51,12 @@ def profile_edit(request):
         form = UserProfileForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return redirect('profile')  # Redirect to profile page after saving
+            return redirect('profile')
     else:
         form = UserProfileForm(instance=user)
     return render(request, 'employees/profile_edit.html', {'form': form,'id':user.id})
 
+@login_required
 @user_passes_test(superadmin)
 def profile_edit_admin(request, id):
     user = Users.objects.get(id=id)
@@ -74,7 +82,7 @@ def logoutuser(request):
 def home(request):
     return render(request, 'employees/base.html')
 
-
+@login_required
 @user_passes_test(allusers)
 def dashboard(request):
     classes = []
@@ -83,7 +91,7 @@ def dashboard(request):
         classes = Class.objects.filter(monitor=request.user)
     return render(request, 'employees/dashboard.html', {'classes': classes})
 
-
+@login_required
 @user_passes_test(allusers)
 def admincloud(request, uid):
     user = request.user
@@ -107,6 +115,7 @@ def admincloud(request, uid):
     return render(request, 'employees/cloudtest.html', 
                 {'context': files, 'uid': uid, 'message': message, 'message_type': message_type})
 
+@login_required
 @user_passes_test(allusers)
 def teachers(request):
     employees = Users.objects.all()
@@ -121,6 +130,7 @@ def generate_password():
 def delete_files(request):
     pass
 
+@login_required
 @user_passes_test(superadmin)
 def addteacher(request):
     if request.method == "POST":
@@ -149,6 +159,7 @@ def addteacher(request):
 
     return render(request, 'employees/addstaff.html')
 
+@login_required
 @user_passes_test(allusers)
 @csrf_exempt
 def ajax_file_upload(request, dir_id=None):
@@ -187,6 +198,7 @@ def ajax_file_upload(request, dir_id=None):
 
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+@login_required
 @require_http_methods(["DELETE"])
 def delete_files(request):
     if request.method == 'DELETE':
@@ -206,3 +218,26 @@ def delete_files(request):
             return JsonResponse({'status': 'success'}, status=200)
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+def deletefunc(id):
+    folder = Files.objects.get(id=id)
+    if Files.objects.filter(parent=id).exists():
+        subfiles = Files.objects.filter(parent=id)
+        for file in subfiles:
+            if file.ftype == 'folder':
+                deletefunc(file.id)
+            else:
+                default_storage.delete(file.file.path)
+                file.delete()
+
+    folder.delete()
+
+
+@login_required
+@user_passes_test(allusers)
+def delete_folder(request, id):
+    if Files.objects.get(id=id).ftype == 'folder':
+        return_id = Files.objects.get(id=id).parent
+        deletefunc(id)
+    return redirect('teachercloud', uid=return_id)

@@ -4,12 +4,13 @@
 <div class="container mt-5">
     <div class="card shadow-lg p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">Edit Profile</h2>
+            <h2 class="mb-0">Edit Profile {{id}}</h2>
             <div>
-                <a class="btn btn-success btn-sm" href="{% url 'credentials' %}">
+                <a class="btn btn-success btn-sm" href="{% url 'credentials' id %}">
                     <i class="fas fa-key"></i> Email Password
                 </a>
-                <a class="btn btn-danger btn-sm" href="{% url 'credentials' %}">
+
+                <a class="btn btn-danger btn-sm" href="{% url 'credentials' id %}">
                     <i class="fas fa-key"></i> Credentials
                 </a>
             </div>
