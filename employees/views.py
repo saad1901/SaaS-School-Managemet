@@ -89,7 +89,8 @@ def dashboard(request):
     if request.user.role == 'Teacher':
         # return render(request, 'employees/superadmin_dashboard.html')
         classes = Class.objects.filter(monitor=request.user)
-    return render(request, 'employees/dashboard.html', {'classes': classes})
+    total_employees = Users.objects.filter(role='Teacher').count()
+    return render(request, 'employees/dashboard.html', {'classes': classes, 'total_employees': total_employees})
 
 @login_required
 @user_passes_test(allusers)

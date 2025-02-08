@@ -15,7 +15,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: hsl(191, 80%, 96%);
+            background-color: hsla(180, 43%, 24%, 0.877);
             transition: background-color 0.3s ease;
         }
 
@@ -25,7 +25,7 @@
         }
 
         #sidebar {
-            background-color: #343a40;
+            background-color: #040113;
             color: white;
             width: 250px;
             min-height: 100vh;
@@ -127,7 +127,10 @@
         }
 
         .topbar {
-            height: 50px;
+            height: 47px;
+        }
+        .topbarbase {
+            background-color: rgb(255, 255, 255);
         }
 
         .role-name {
@@ -144,12 +147,12 @@
         }
 
         .dark-mode #sidebar {
-            background-color: #1f1f1f;
+            background-color: #040113;
             color: #ffffff;
         }
 
         .dark-mode .navbar {
-            background-color: #1f1f1f !important;
+            background-color: #040113 !important;
             border-color: #333 !important;
         }
 
@@ -168,9 +171,28 @@
             transform: translate(-50%, -50%);
             z-index: 1000;
         }
-        .dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode h4, .dark-mode h5, .dark-mode h6,
-        .dark-mode p, .dark-mode span , .dark-mode a, .dark-mode .file-actions button {
+
+        .dark-mode h1,
+        .dark-mode h2,
+        .dark-mode h3,
+        .dark-mode h4,
+        .dark-mode h5,
+        .dark-mode h6,
+        .dark-mode p,
+        .dark-mode span,
+        .dark-mode a,
+        .dark-mode .file-actions button {
             color: #ffffff !important;
+        }
+
+        .dark-mode .card.employees,
+        .dark-mode .topbar2,
+        .dark-mode {
+            background-color: #1f1f1f;
+        }
+
+        .dark-mode .card.employees:hover {
+            background-color: #333;
         }
     </style>
     {% block style %}{% endblock %}
@@ -257,7 +279,7 @@
         <!-- Page Content -->
         <div class="flex-grow-1 content">
             <!-- Top Navbar -->
-            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <nav class="navbar navbar-expand-lg border-bottom topbarbase">
                 <div class="container-fluid topbar">
                     <button class="btn" id="menu-toggle">☰</button>
                     <p class="role-name">{{ user.role }} Portal - {{ user.name }}</p>

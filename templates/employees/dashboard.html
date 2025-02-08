@@ -3,19 +3,55 @@
 <!-- STYLE -->
 {% block style %}
 <style>
-    .cards {
+
+
+    .cards-container {
         display: flex;
-        direction: row;
-        width: 300px;
-        height: 120px;
-        border: 1px solid black;
-        border-radius: 5px;
-        background-color: lightgrey;
-        padding-top: 15px;
-        padding-left: 15px;
-        margin-left: 20px;
-        margin-top: 20px;
-        font-size: 23px;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 250px;
+        height: 150px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card p {
+        margin: 0;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .card .values {
+        font-size: 30px;
+        font-weight: bold;
+        color: #007bff;
+        text-align: right;
+    }
+
+    .card.employees {
+        background-color: #f8f9fa;
+    }
+
+    .card.employees:hover {
+        background-color: #e9ecef;
     }
 </style>
 {% endblock %}
@@ -23,30 +59,43 @@
 <!-- CONTENT -->
 {% block content %}
 
-<div class="container-fluid row">
-    {% for class in classes %}
-    <a href="">
-        <div class="cards">
+<div class="container-fluid">
+
+    <div class="cards-container">
+        {% for class in classes %}
+        <a href="#" class="card">
             <div>
                 <p>{{class.name}} {{class.section}}</p>
             </div>
+            <div class="count">100</div>
+        </a>
+        {% endfor %}
 
+        {% if user.role == 'Super Admin' %}
+        <a href="{% url 'employees' %}" class="card employees">
             <div>
-                <p>100</p>
+                <p class="titles">Teachers</p>
             </div>
-        </div>
-    </a>
-
-    {% endfor %}
-
-
-
+            <div class="values">{{total_employees}}</div>
+        </a>
+        <a href="{% url 'employees' %}" class="card employees">
+            <div>
+                <p>Clerk</p>
+            </div>
+            <div class="values">3</div>
+        </a>
+        {% endif %}
+        <a href="{% url 'employees' %}" class="card employees">
+            <div>
+                <p>Students</p>
+            </div>
+            <div class="values">429</div>
+        </a>
+    </div>
 </div>
 
 {% endblock %}
 
-
 <!-- SCRIPT -->
 {% block script %}
-
 {% endblock %}
