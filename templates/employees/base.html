@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
     <style>
+        /* General Styles */
         body {
             font-family: 'Arial', sans-serif;
             background-color: hsla(180, 43%, 24%, 0.877);
@@ -129,6 +129,7 @@
         .topbar {
             height: 47px;
         }
+
         .topbarbase {
             background-color: rgb(255, 255, 255);
         }
@@ -147,12 +148,12 @@
         }
 
         .dark-mode #sidebar {
-            background-color: #040113;
+            background-color: #1f1f1f;
             color: #ffffff;
         }
 
         .dark-mode .navbar {
-            background-color: #040113 !important;
+            background-color: #1f1f1f !important;
             border-color: #333 !important;
         }
 
@@ -164,35 +165,86 @@
             background-color: #333;
         }
 
-        #loading-spinner {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1000;
+        .dark-mode .dropdown-menu {
+            background-color: #1f1f1f;
+            border: 1px solid #333;
         }
 
-        .dark-mode h1,
-        .dark-mode h2,
-        .dark-mode h3,
-        .dark-mode h4,
-        .dark-mode h5,
-        .dark-mode h6,
-        .dark-mode p,
-        .dark-mode span,
-        .dark-mode a,
+        .dark-mode .dropdown-item {
+            color: #ffffff !important;
+        }
+
+        .dark-mode .dropdown-item:hover {
+            background-color: #333;
+        }
+
+        .dark-mode .dropdown-header {
+            color: #ffffff !important;
+        }
+
+        .dark-mode .badge {
+            color: #ffffff;
+        }
+
+        .dark-mode .dropdown-divider {
+            border-color: #333;
+        }
+
+        .dark-mode .card {
+            background-color: #1f1f1f;
+            border-color: #333;
+        }
+
+        .dark-mode .card:hover {
+            background-color: #333;
+        }
+
+        .dark-mode .pages {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dark-mode hr {
+            border-color: #333;
+        }
+
         .dark-mode .file-actions button {
             color: #ffffff !important;
         }
 
+        .dark-mode .detailstable {
+            background-color: #1f1f1f;
+            color: #ffffff;
+        }
+
+        .dark-mode th,
+        .dark-mode td {
+            border: 1px solid #333;
+        }
+
         .dark-mode .card.employees,
         .dark-mode .topbar2,
-        .dark-mode {
+        .dark-mode .detailstable {
             background-color: #1f1f1f;
         }
 
         .dark-mode .card.employees:hover {
             background-color: #333;
+        }
+
+        .pages {
+            margin: 20px;
+        }
+
+        hr {
+            color: #ffffff;
+            border: 1.5px solid;
+        }
+
+        .dark-mode h1,
+        .dark-mode hr,
+        .dark-mode .file-actions button {
+            color: #ffffff !important;
         }
     </style>
     {% block style %}{% endblock %}
@@ -203,7 +255,7 @@
         <!-- Sidebar -->
         <nav id="sidebar">
             <div class="sidebar-heading">
-                <h5>School Management</h5>
+                <h5>ABC School</h5>
             </div>
             <ul class="nav flex-column">
                 <li class="nav-item">
@@ -281,15 +333,77 @@
             <!-- Top Navbar -->
             <nav class="navbar navbar-expand-lg border-bottom topbarbase">
                 <div class="container-fluid topbar">
+                    <!-- Menu Toggle Button -->
                     <button class="btn" id="menu-toggle">☰</button>
+
+                    <!-- User Role and Name -->
                     <p class="role-name">{{ user.role }} Portal - {{ user.name }}</p>
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
+
+                    <!-- Navbar Items -->
+                    <ul class="navbar-nav ms-auto d-flex align-items-center">
+                        <!-- Messages Icon with Proper Badge Positioning -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-envelope fs-5"></i>
+                                <span
+                                    class="badge bg-success position-absolute top-30 start-70 translate-middle p-1 rounded-circle"
+                                    style="font-size: 0.8rem; min-width: 20px;">
+                                    3
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow p-2" style="min-width: 250px;">
+                                <li>
+                                    <h6 class="dropdown-header">Messages</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="#">📩 New message from Admin</a></li>
+                                <li><a class="dropdown-item" href="#">📩 Reminder: Meeting at 3 PM</a></li>
+                                <li><a class="dropdown-item" href="#">📩 System Update Scheduled</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item text-center fw-bold text-primary" href="#">View All
+                                        Messages</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Notifications Icon with Proper Badge Positioning -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-bell fs-5"></i>
+                                <span
+                                    class="badge bg-danger position-absolute top-30 start-70 translate-middle p-1 rounded-circle"
+                                    style="font-size: 0.8rem; min-width: 20px;">
+                                    5
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow p-2"
+                                style="min-width: 280px; max-height: 300px; overflow-y: auto;">
+                                <li>
+                                    <h6 class="dropdown-header">Notifications</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="#">🔔 New Student Registered</a></li>
+                                <li><a class="dropdown-item" href="#">🔔 Teacher uploaded an assignment</a></li>
+                                <li><a class="dropdown-item" href="#">🔔 Fee Payment Deadline: Tomorrow</a></li>
+                                <li><a class="dropdown-item" href="#">🔔 New Event: Science Fair</a></li>
+                                <li><a class="dropdown-item" href="#">🔔 Leave Request Approved</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item text-center fw-bold text-primary" href="#">View All
+                                        Notifications</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item" style="margin-left: 10px;">
                             <a href="{% url 'profile' %}" class="nav-link">Profile</a>
                         </li>
+
+                        <!-- Logout Link -->
                         <li class="nav-item">
                             <a href="{% url 'logout' %}" class="nav-link">Logout</a>
                         </li>
+
+                        <!-- Theme Toggle Button -->
                         <li class="nav-item">
                             <button id="theme-toggle" class="btn btn-outline-secondary ms-2">
                                 <i class="bi bi-moon"></i>
@@ -300,12 +414,9 @@
             </nav>
 
             <!-- Main Content -->
-            <div class="container mt-4">
+            <div class="pages">
                 {% block content %}{% endblock %}
             </div>
-
-
-
         </div>
         <!-- /Page Content -->
     </div>
@@ -351,8 +462,6 @@
             body.classList.add('dark-mode');
             themeToggle.innerHTML = '<i class="bi bi-sun"></i>';
         }
-
-
 
         // Keyboard Shortcuts
         document.addEventListener('keydown', function (e) {

@@ -1,0 +1,488 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}School Management System{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: hsla(180, 43%, 24%, 0.877);
+            transition: background-color 0.3s ease;
+        }
+
+        #wrapper {
+            display: flex;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #sidebar {
+            background-color: #040113;
+            color: white;
+            width: 250px;
+            min-height: 100vh;
+            transition: all 0.3s ease-in-out;
+            position: relative;
+        }
+
+        #sidebar a {
+            color: #ffffff;
+            padding: 10px;
+            display: block;
+        }
+
+        #sidebar a:hover {
+            background-color: #495057;
+            text-decoration: none;
+        }
+
+        #sidebar .sidebar-heading {
+            font-size: 1.5rem;
+            padding: 1rem;
+            background-color: #212529;
+            text-align: center;
+        }
+
+        #menu-toggle {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+
+        #menu-toggle:hover {
+            background-color: #0056b3;
+        }
+
+        #wrapper.sidebar-hidden #sidebar {
+            margin-left: -250px;
+        }
+
+        #wrapper.sidebar-hidden .content {
+            margin-left: 0;
+        }
+
+        #sidebar .nav-link.active {
+            background-color: #525d69;
+            color: white;
+        }
+
+        #sidebar.collapsed {
+            width: 60px;
+            overflow: hidden;
+        }
+
+        #sidebar.collapsed .sidebar-heading,
+        #sidebar.collapsed .nav-link span {
+            display: none;
+        }
+
+        #sidebar.collapsed .nav-link {
+            text-align: center;
+        }
+
+        #sidebar.collapsed .nav-link i {
+            margin-right: 0;
+        }
+
+        @media (max-width: 768px) {
+            #sidebar {
+                position: absolute;
+                z-index: 1000;
+                width: 250px;
+                left: -250px;
+                top: 0;
+            }
+
+            #wrapper.sidebar-active #sidebar {
+                left: 0;
+            }
+
+            #menu-toggle {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+            }
+
+            .role-name {
+                font-size: 18px;
+                margin-left: 10px;
+                margin-top: 10px;
+            }
+
+            .navbar-nav {
+                flex-direction: row;
+            }
+
+            .navbar-nav .nav-item {
+                margin-left: 10px;
+            }
+        }
+
+        .topbar {
+            height: 47px;
+        }
+
+        .topbarbase {
+            background-color: rgb(255, 255, 255);
+        }
+
+        .role-name {
+            font-size: 25px;
+            margin-left: 20px;
+            margin-top: 16px;
+            font-weight: bold;
+            color: rgb(235, 12, 12);
+        }
+
+        .dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .dark-mode #sidebar {
+            background-color: #040113;
+            color: #ffffff;
+        }
+
+        .dark-mode .navbar {
+            background-color: #040113 !important;
+            border-color: #333 !important;
+        }
+
+        .dark-mode .nav-link {
+            color: #ffffff !important;
+        }
+
+        .dark-mode .nav-link.active {
+            background-color: #333;
+        }
+
+        #loading-spinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+
+        .dark-mode h1,
+        .dark-mode h2,
+        .dark-mode h3,
+        .dark-mode h4,
+        .dark-mode h5,
+        .dark-mode h6,
+        .dark-mode p,
+        .dark-mode span,
+        .dark-mode a,
+        .dark-mode hr,
+        .dark-mode .file-actions button {
+            color: #ffffff !important;
+        }
+
+        .dark-mode .detailstable {
+            background-color: black;
+            color: white;
+        }
+
+        .dark-mode th,
+        .dark-mode td {
+            border: 1px solid white;
+        }
+
+
+        .dark-mode .card.employees,
+        .dark-mode .topbar2,
+        .dark-mode .detailstable {
+            background-color: #1f1f1f;
+        }
+
+        .dark-mode .card.employees:hover {
+            background-color: #333;
+        }
+
+        .pages {
+            margin: 20px;
+        }
+
+        hr {
+            color: #ffffff;
+        }
+
+        .dark-mode .dropdown-menu {
+            background-color: #1f1f1f !important;
+            color: #ffffff !important;
+            border: 1px solid #333;
+        }
+
+        .dark-mode .dropdown-menu .dropdown-item {
+            color: #ffffff !important;
+        }
+
+        .dark-mode .dropdown-menu .dropdown-item:hover {
+            background-color: #333 !important;
+        }
+
+        .dark-mode .dropdown-header {
+            color: #bbbbbb !important;
+        }
+
+        .dark-mode .badge {
+            color: #ffffff !important;
+            background-color: #dc3545 !important;
+            /* Keep badges readable */
+        }
+    </style>
+    {% block style %}{% endblock %}
+</head>
+
+<body>
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div class="sidebar-heading">
+                <h5>School Management</h5>
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a href="{% url 'dashboard' %}"
+                        class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                        <i class="bi bi-house-door"></i> <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'students' %}"
+                        class="nav-link {% if request.resolver_match.url_name == 'students' %}active{% endif %}">
+                        <i class="bi bi-people"></i> <span>Students</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'employees' %}"
+                        class="nav-link {% if request.resolver_match.url_name == 'employees' or request.resolver_match.url_name == 'addteacher' %}active{% endif %}">
+                        <i class="bi bi-person-badge"></i> <span>Staff</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'teachercloud' 0 %}"
+                        class="nav-link {% if request.resolver_match.url_name == 'teachercloud' %}active{% endif %}">
+                        <i class="bi bi-cloud-upload"></i> <span>Teacher Cloud</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'classes' %}"
+                        class="nav-link {% if request.resolver_match.url_name == 'classes' %}active{% endif %}">
+                        <i class="bi bi-book"></i> <span>Classes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'subjects' %}"
+                        class="nav-link {% if request.resolver_match.url_name == 'subjects' %}active{% endif %}">
+                        <i class="bi bi-journal-text"></i> <span>Subjects</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'reports' %}"
+                        class="nav-link {% if request.resolver_match.url_name == 'reports' %}active{% endif %}">
+                        <i class="bi bi-file-earmark-bar-graph"></i> <span>Reports</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'postnotes' %}"
+                        class="nav-link {% if request.resolver_match.url_name == 'postnotes' %}active{% endif %}">
+                        <i class="bi bi-sticky"></i> <span>Add Notes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'posthw' %}"
+                        class="nav-link {% if request.resolver_match.url_name == 'posthw' %}active{% endif %}">
+                        <i class="bi bi-journal-check"></i> <span>Add Homework</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'finance' %}"
+                        class="nav-link {% if request.resolver_match.url_name == 'finance' %}active{% endif %}">
+                        <i class="bi bi-cash-stack"></i> <span>Finance</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'settings' %}"
+                        class="nav-link {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
+                        <i class="bi bi-gear"></i> <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /Sidebar -->
+
+        <!-- Page Content -->
+        <div class="flex-grow-1 content">
+            <!-- Top Navbar -->
+            <nav class="navbar navbar-expand-lg border-bottom topbarbase">
+                <div class="container-fluid topbar">
+                    <!-- Menu Toggle Button -->
+                    <button class="btn" id="menu-toggle">☰</button>
+
+                    <!-- User Role and Name -->
+                    <p class="role-name">{{ user.role }} Portal - {{ user.name }}</p>
+
+                    <!-- Navbar Items -->
+                    <ul class="navbar-nav ms-auto d-flex align-items-center">
+                        <!-- Messages Icon with Proper Badge Positioning -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-envelope fs-5"></i>
+                                <span
+                                    class="badge bg-success position-absolute top-30 start-70 translate-middle p-1 rounded-circle"
+                                    style="font-size: 0.8rem; min-width: 20px;">
+                                    3
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow p-2" style="min-width: 250px;">
+                                <li>
+                                    <h6 class="dropdown-header">Messages</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="#">📩 New message from Admin</a></li>
+                                <li><a class="dropdown-item" href="#">📩 Reminder: Meeting at 3 PM</a></li>
+                                <li><a class="dropdown-item" href="#">📩 System Update Scheduled</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item text-center fw-bold text-primary" href="#">View All
+                                        Messages</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Notifications Icon with Proper Badge Positioning -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-bell fs-5"></i>
+                                <span
+                                    class="badge bg-danger position-absolute top-30 start-70 translate-middle p-1 rounded-circle"
+                                    style="font-size: 0.8rem; min-width: 20px;">
+                                    5
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow p-2"
+                                style="min-width: 280px; max-height: 300px; overflow-y: auto;">
+                                <li>
+                                    <h6 class="dropdown-header">Notifications</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="#">🔔 New Student Registered</a></li>
+                                <li><a class="dropdown-item" href="#">🔔 Teacher uploaded an assignment</a></li>
+                                <li><a class="dropdown-item" href="#">🔔 Fee Payment Deadline: Tomorrow</a></li>
+                                <li><a class="dropdown-item" href="#">🔔 New Event: Science Fair</a></li>
+                                <li><a class="dropdown-item" href="#">🔔 Leave Request Approved</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item text-center fw-bold text-primary" href="#">View All
+                                        Notifications</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item" style="margin-left: 10px;">
+                            <a href="{% url 'profile' %}" class="nav-link">Profile</a>
+                        </li>
+
+                        <!-- Logout Link -->
+                        <li class="nav-item">
+                            <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                        </li>
+
+                        <!-- Theme Toggle Button -->
+                        <li class="nav-item">
+                            <button id="theme-toggle" class="btn btn-outline-secondary ms-2">
+                                <i class="bi bi-moon"></i>
+                            </button>
+                        </li>
+                    </ul>
+
+
+
+
+
+                </div>
+            </nav>
+
+
+            <!-- Main Content -->
+            <div class="pages">
+                {% block content %}{% endblock %}
+            </div>
+
+
+
+
+        </div>
+        <!-- /Page Content -->
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="d-none">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar Toggle
+        const menuToggle = document.getElementById("menu-toggle");
+        const sidebar = document.getElementById("sidebar");
+
+        menuToggle.addEventListener("click", function () {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle("collapsed");
+            } else {
+                sidebar.classList.toggle("collapsed");
+            }
+        });
+
+        // Dark Mode Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        themeToggle.addEventListener('click', function () {
+            body.classList.toggle('dark-mode');
+            if (body.classList.contains('dark-mode')) {
+                themeToggle.innerHTML = '<i class="bi bi-sun"></i>';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeToggle.innerHTML = '<i class="bi bi-moon"></i>';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-mode');
+            themeToggle.innerHTML = '<i class="bi bi-sun"></i>';
+        }
+
+
+
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', function (e) {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                sidebar.classList.toggle('collapsed');
+            }
+
+            if (e.ctrlKey && e.key === 'l') {
+                e.preventDefault();
+                window.location.href = "{% url 'logout' %}";
+            }
+        });
+    </script>
+
+    {% block script %}{% endblock %}
+</body>
+
+</html>

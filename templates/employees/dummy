@@ -1,0 +1,119 @@
+{% extends 'employees/base.html' %}
+
+<!-- STYLE -->
+{% block style %}
+<style>
+    /* General Styles */
+    .container-fluid {
+        padding: 20px;
+    }
+
+    .cards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .section-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #343a40;
+        border-bottom: 2px solid #007bff;
+        display: inline-block;
+        padding-bottom: 5px;
+    }
+
+    .card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        width: 220px;
+        height: 100px;
+        border-radius: 12px;
+        background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+        padding: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        text-decoration: none;
+        color: #333;
+        font-weight: 600;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+    }
+
+    .card p {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    /* Role-based Styling */
+    .card.employees {
+        background: linear-gradient(to bottom, #007bff, #0056b3);
+        color: white;
+    }
+
+    .card.employees:hover {
+        background: linear-gradient(to bottom, #0056b3, #003f7f);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+        .cards-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+<!-- CONTENT -->
+{% block content %}
+<div class="container-fluid">
+
+    <!-- Staff Reports Section -->
+    <h2 class="section-title">Staff Reports</h2>
+    <div class="cards-container">
+        {% if user.role == 'Super Admin' %}
+        <a href="{% url 'employees' %}" class="card employees">
+            <p>Teachers</p>
+        </a>
+        <a href="{% url 'employees' %}" class="card employees">
+            <p>Clerk</p>
+        </a>
+        {% endif %}
+        <a href="{% url 'employees' %}" class="card employees">
+            <p>Students</p>
+        </a>
+    </div>
+
+    <hr>
+
+    <!-- Student Reports Section -->
+    <h2 class="section-title">Student Reports</h2>
+    <div class="cards-container">
+        {% if user.role == 'Super Admin' %}
+        <a href="{% url 'employees' %}" class="card employees">
+            <p>Teachers</p>
+        </a>
+        <a href="{% url 'employees' %}" class="card employees">
+            <p>Clerk</p>
+        </a>
+        {% endif %}
+        <a href="{% url 'employees' %}" class="card employees">
+            <p>Students</p>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+<!-- SCRIPT -->
+{% block script %}
+{% endblock %}

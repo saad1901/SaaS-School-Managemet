@@ -4,13 +4,13 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 from app.views import *
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import logout
 from django.contrib.auth.hashers import make_password
 from .forms import UserProfileForm
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods
 from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.contrib.auth import authenticate, login, logout
 
 @login_required
 @user_passes_test(allusers)
@@ -38,7 +38,8 @@ def credentials(request, id):
         user.hint = password
         user.save()
         if id == request.user.id:
-            login(request, request.user)
+            print('i am called')
+            login(request, user)
         messages.success(request, "Your password has been successfully updated!")
 
     return render(request, 'employees/credentials.html', {'user':user,'id': id})
@@ -54,7 +55,7 @@ def profile_edit(request):
             return redirect('profile')
     else:
         form = UserProfileForm(instance=user)
-    return render(request, 'employees/profile_edit.html', {'form': form,'id':user.id})
+    return render(request, 'employees/profile_edit.html', {'form': form,'id':user.id, 'personal': True})
 
 @login_required
 @user_passes_test(superadmin)
@@ -242,3 +243,8 @@ def delete_folder(request, id):
         return_id = Files.objects.get(id=id).parent
         deletefunc(id)
     return redirect('teachercloud', uid=return_id)
+
+@login_required
+@user_passes_test(allusers)
+def reports(request):
+    return render(request, 'employees/reports.html')
