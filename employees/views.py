@@ -11,6 +11,7 @@ from django.views.decorators.http import require_http_methods
 from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.contrib.auth import authenticate, login, logout
+import math
 
 @login_required
 @user_passes_test(allusers)
@@ -171,11 +172,19 @@ def ajax_file_upload(request, dir_id=None):
 
         if uploaded_file.size > max_size:
             return JsonResponse({'message': 'File size must be less than 100MB.'}, status=400)
-            
+
         file_obj = request.FILES['file']
         file_name = file_obj.name
+
+        # Convert size to KB or MB, rounding up
+        if file_obj.size > 1024 * 1024:
+            file_size = str(math.ceil(file_obj.size / (1024 * 1024))) + ' MB'
+        else:
+            file_size = str(math.ceil(file_obj.size / 1024)) + ' KB'
+
         file_type = file_obj.content_type.split('/')[1]
-        parent_dir = str(dir_id) if dir_id is not None else '' 
+        parent_dir = str(dir_id) if dir_id is not None else ''
+ 
 
         # Check if a file with the same name and type exists in the parent directory
         if Files.objects.filter(name=file_name, ftype=file_type, parent=parent_dir, fk=request.user).exists():
@@ -190,7 +199,8 @@ def ajax_file_upload(request, dir_id=None):
             ftype=file_type,
             file=file_obj,
             fk=request.user, 
-            parent=parent_dir
+            parent=parent_dir,
+            file_size=file_size
         )
 
         return JsonResponse({

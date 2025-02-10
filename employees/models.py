@@ -44,7 +44,6 @@ class Users(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(max_length=50, default='Teacher')
     salary = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
 
-    # Address Information
     address = models.TextField(blank=True, null=True)
     city = models.CharField(max_length=50, blank=True, null=True)
     state = models.CharField(max_length=50, blank=True, null=True)
@@ -68,8 +67,10 @@ class Files(models.Model):
     name = models.CharField(max_length=60)
     ftype = models.CharField(max_length=25)
     parent = models.CharField(max_length=60, blank=True, null=True)
+    file_size = models.CharField(max_length=60, blank=True, null=True, default=None)
     file = models.FileField(upload_to='uploads/', null=True, blank=True)  # Store files in 'uploads/' directory
     fk = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.name
 

@@ -5,13 +5,11 @@
 <style>
 
     .cards-container {
-        flex-wrap: wrap;
-        display: flex;
-        direction: row;
-        gap: 20px;
-        padding: 20px;
-    }
-
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-gap: 7px;
+            margin-top: 20px;
+        }
     .card {
         display: flex;
         flex-direction: column;
@@ -48,6 +46,7 @@
 
     .card.employees {
         background-color: #f8f9fa;
+
     }
 
     .card.employees:hover {

@@ -26,7 +26,8 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        flex-grow: 1;
+        flex: 3;
+        /* More space for Name */
     }
 
     .file-icon {
@@ -37,15 +38,30 @@
     .file-name {
         font-size: 1.0rem;
         color: #ffffff;
-        flex-grow: 1;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 
+    .file-size {
+        flex: 1;
+        /* Space for Size */
+        color: #ffffff;
+        margin-left: 20px;
+    }
+
+    .file-creation-time {
+        flex: 1;
+        /* Space for Date Modified */
+        color: #ffffff;
+        margin-left: 20px;
+    }
+
     .file-actions {
         display: flex;
         gap: 5px;
+        flex: 0.5;
+        /* Less space for Actions */
     }
 
     .file-actions button {
@@ -54,6 +70,10 @@
         cursor: pointer;
         font-size: 1rem;
         padding: 2px;
+        color: #ffffff;
+    }
+
+    .file-item span {
         color: #ffffff;
     }
 
@@ -68,14 +88,61 @@
         cursor: pointer;
     }
 
-    #deleteSelectedButton {
-        margin-right: 20px;
-        border-radius: 25px;
-
+    .file-header {
+        display: flex;
+        align-items: center;
+        padding: 5px;
+        background-color: #250633;
+        /* Dark background for contrast */
+        color: #ffffff;
+        font-weight: bold;
+        text-align: left;
+        border-radius: 30px;
     }
 
-    .foldericon {
-        margin-left: 19px;
+    .file-header>div,
+    .file-item>div {
+        padding: 5px 10px;
+        text-align: left;
+    }
+
+    .header-name,
+    .file-info {
+        flex: 3;
+        min-width: 200px;
+    }
+
+    .header-date,
+    .file-date {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .header-size,
+    .file-size {
+        flex: 1;
+        min-width: 100px;
+        margin-right: 40px;
+        display: flex;
+        justify-content: flex-end;
+        /* Align content to the right */
+        text-align: right;
+        padding-right: 20px;
+        /* Adjust spacing */
+    }
+
+
+
+    .header-actions,
+    .file-actions {
+        flex: 0.5;
+        min-width: 80px;
+        text-align: center;
+    }
+
+    #deleteSelectedButton{
+        margin-right: 20px;
+        border-radius: 40px;
     }
 </style>
 
@@ -108,100 +175,90 @@
             Folder</button>
     </div>
 </div>
-
 <!-- File Manager -->
 <div class="container file-manager">
+
+    <!-- Table Header Row -->
+    <div class="file-header">
+        <input type="checkbox" style="margin-left: 7px;" value="{{ c.id }}">
+        <div class="header-name">Name</div>
+        <div class="header-date">Date Modified</div>
+        <div class="header-size">Size</div>
+        <div class="header-actions">Actions</div>
+    </div>
+
+    <!-- File List -->
     {% for c in context %}
     <div class="file-item">
+
         {% if c.ftype != 'folder' %}
         <input type="checkbox" class="file-select" value="{{ c.id }}">
         {% endif %}
 
+        <!-- File/Folder Name -->
         <div class="file-info">
             {% if c.ftype == 'folder' %}
             <img src="{% static 'images/icon/folder.png' %}" class="file-icon foldericon" alt="Folder">
             <a href="{% url 'teachercloud' c.id %}" class="file-name">{{ c.name }}</a>
-
-            {% elif c.ftype in 'jpg png jpeg webp' %}
+            {% else %}
+            {% if c.ftype in 'jpg png jpeg webp' %}
             <img src="{{ c.file.url }}" class="file-icon" alt="Image">
-            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-
             {% elif c.ftype == 'pdf' %}
             <img src="{% static 'images/icon/pdf.png' %}" class="file-icon" alt="PDF">
-            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-
             {% elif c.ftype in 'docx vnd.openxmlformats-officedocument.wordprocessingml.document' %}
             <img src="{% static 'images/icon/word.png' %}" class="file-icon" alt="Word Document">
-            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-
             {% elif c.ftype in 'csv vnd.openxmlformats-officedocument.spreadsheetml.sheet' %}
             <img src="{% static 'images/icon/csv.png' %}" class="file-icon" alt="Excel">
-            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-
             {% elif c.ftype in 'pptx vnd.openxmlformats-officedocument.presentationml.presentation' %}
             <img src="{% static 'images/icon/pptx.png' %}" class="file-icon" alt="PowerPoint">
-            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-
             {% elif c.ftype == 'zip' %}
             <img src="{% static 'images/icon/zip.png' %}" class="file-icon" alt="ZIP">
-            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-
             {% elif c.ftype == 'mpeg' %}
             <img src="{% static 'images/icon/audio.png' %}" class="file-icon" alt="Audio">
-            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-
-            {% elif c.name|slice:"-4:" == ".cpp" or c.name|slice:"-4:" == ".php" or c.name|slice:"-4:" == ".zip" or c.name|slice:"-4:" == ".sql" or c.name|slice:"-4:" == ".exe" or c.name|slice:"-4:" == ".css" %}
-            <img src="{% static 'images/icon/' %}{{ c.name|slice:'-3:' }}.png" class="file-icon" alt="3X-Code">
-            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-
-            {% elif c.name|slice:"-8:" == ".sqlite3" %}
-            <img src="{% static 'images/icon/sql.png' %}" class="file-icon" alt="SQLite3-Code">
-            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-
-            {% elif c.name|slice:"-2:" == ".c" %}
-            <img src="{% static 'images/icon/c.png' %}" class="file-icon" alt="C-Code">
-            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-
-            {% elif c.name|slice:"-3:" == ".py" or c.name|slice:"-3:" == ".js"%}
-            <img src="{% static 'images/icon/' %}{{ c.name|slice:'-2:' }}.png" class="file-icon" alt="Python-JS-Code">
-            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-
             {% elif c.name|slice:"-4:" == ".txt" %}
             <img src="{% static 'images/icon/txt.png' %}" class="file-icon" alt="Text File">
-            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-
             {% elif c.name|slice:"-5:" == ".html" %}
             <img src="{% static 'images/icon/html.png' %}" class="file-icon" alt="HTML File">
-            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-
             {% elif c.name|slice:"-4:" == ".wmv" or c.name|slice:"-4:" == ".MP4" or c.name|slice:"-4:" == ".mp4" %}
             <img src="{% static 'images/icon/video.png' %}" class="file-icon" alt="Video File">
-            <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
-
             {% else %}
             <img src="{% static 'images/icon/default.png' %}" class="file-icon" alt="File">
+            {% endif %}
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
             {% endif %}
         </div>
 
+
+
+        <!-- Date Modified -->
+        <div class="file-date">
+            <span class="metadata-value">{{ c.created_at|date:"M d, Y H:i" }}</span>
+        </div>
+
+        <!-- File Size -->
+        <div class="file-size">
+            <span class="metadata-value">{{ c.file_size }}</span>
+        </div>
 
         <!-- Actions -->
         <div class="file-actions">
             {% if c.ftype == 'folder' %}
-            <button title="Delete" class="Delete-folder" data-id="{{ c.id }}">
+            <button title="Delete" class="delete-folder" data-id="{{ c.id }}">
                 <i class="bi bi-trash"></i>
             </button>
             {% endif %}
-            <button title="Rename" class="rename-folder" data-id="{{ c.id }}">
+            <button title="Rename" class="rename-file" data-id="{{ c.id }}">
                 <i class="bi bi-pencil"></i>
             </button>
-            <button title="Share" class="share-folder" data-id="{{ c.id }}">
+            <button title="Share" class="share-file" data-id="{{ c.id }}">
                 <i class="bi bi-share"></i>
             </button>
         </div>
+
     </div>
     {% endfor %}
 </div>
+
 
 <!-- Add this button below the file manager section -->
 
