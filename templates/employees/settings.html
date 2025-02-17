@@ -8,7 +8,7 @@
 
 <!-- CONTENT -->
 {% block content %}
-{% if user.role == 'superadmin' %}
+{% if user.role == 'Super Admin' %}
 <form method="post" class="needs-validation" novalidate>
     {% csrf_token %}
     <div class="form-group">
