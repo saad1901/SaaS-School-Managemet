@@ -5,4 +5,6 @@ from .staff import *
 from .settings import *
 from .reports import *
 from .uploadfile import *
-
+from .cloud import *
+from .home import *
+from .authentication import *

@@ -33,15 +33,8 @@
 
     .card p {
         margin: 0;
-        font-size: 27px;
+        font-size: 38px;
         font-weight: bold;
-    }
-
-    .card .values {
-        font-size: 30px;
-        font-weight: bold;
-        color: #007bff;
-        text-align: right;
     }
 
     .card.employees {
@@ -67,42 +60,9 @@
             <div class="titles">
                 <p>{{class.name}} {{class.section}}</p>
             </div>
-            <div class="values">100</div>
         </a>
         {% endfor %}
 
-        {% if user.role == 'Super Admin' or user.role ==  'Clerk' %}
-        {% for role in roles %}
-        <a href="{% url 'employees' %}" class="card employees">
-            <div>
-                <p class="titles">{{role.name}}</p>
-            </div>
-            <div class="values">{{ role_counts|get_item:role.name }}</div>
-        </a>
-        {% endfor %}
-        <a href="{% url 'employees' %}" class="card employees">
-            <div>
-                <p>Total Students</p>
-            </div>
-            <div class="values">429</div>
-        </a>
-        <a href="{% url 'classes' %}" class="card employees">
-            <div>
-                <p>Total Classes</p>
-            </div>
-            <div class="values">{{total_classes}}</div>
-        </a>
-        {% endif %}
-        {% if user.role == 'Teacher' or user.role == 'Super Admin' %}
-
-        <a href="{% url 'students' %}" class="card employees">
-            <div>
-                <p>Assigned Students</p>
-            </div>
-            <div class="values">76</div>
-        </a>
-
-        {% endif %}
     </div>
 </div>
 

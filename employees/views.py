@@ -1,92 +1,88 @@
-from django.shortcuts import render
-from .models import *
-from django.contrib.auth.decorators import user_passes_test, login_required
-from app.views import *
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.hashers import make_password
-from .forms import UserProfileForm, SchoolInfoForm
-from django.contrib import messages
-from django.views.decorators.http import require_http_methods
-from django.core.files.storage import default_storage
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.contrib.auth import authenticate, login, logout
-import math
+# from django.shortcuts import render
+# from .models import *
+# from django.contrib.auth.decorators import user_passes_test, login_required
+# from app.views import *
+# from django.http import JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
+# from django.contrib.auth.hashers import make_password
+# from .forms import UserProfileForm, SchoolInfoForm
+# from django.contrib import messages
+# from django.views.decorators.http import require_http_methods
+# from django.core.files.storage import default_storage
+# from django.core.files.uploadedfile import InMemoryUploadedFile
+# from django.contrib.auth import authenticate, login, logout
+# import math
 
 # @login_required
 # @user_passes_test(allusers)
 # def profile(request):
 #     return render(request, 'employees/profile/profile.html')
 
-@login_required
-@user_passes_test(allusers)
-def basefilehtml(request):
-    return render(request, 'employees/profile/profile.html')
+# @login_required
+# @user_passes_test(allusers)
+# def credentials(request, id):
+#     print('credentials id = ', id)
+#     user = Users.objects.get(id=id)
 
-@login_required
-@user_passes_test(allusers)
-def credentials(request, id):
-    print('credentials id = ', id)
-    user = Users.objects.get(id=id)
+#     print('credentials name = ', user.name)
+#     if request.method == 'POST':
+#         password = request.POST.get('password')
 
-    print('credentials name = ', user.name)
-    if request.method == 'POST':
-        password = request.POST.get('password')
+#         # Validate password length and complexity (Optional)
+#         if len(password) < 8 or not any(char.isdigit() for char in password) \
+#            or not any(char.islower() for char in password) \
+#            or not any(char.isupper() for char in password):
+#             messages.error(request, "Password must contain at least 8 characters, one uppercase, one lowercase, and one number.")
+#             return render(request, 'employees/profile/credentials.html')
 
-        # Validate password length and complexity (Optional)
-        if len(password) < 8 or not any(char.isdigit() for char in password) \
-           or not any(char.islower() for char in password) \
-           or not any(char.isupper() for char in password):
-            messages.error(request, "Password must contain at least 8 characters, one uppercase, one lowercase, and one number.")
-            return render(request, 'employees/profile/credentials.html')
+#         user.password = make_password(password)
+#         user.hint = password
+#         user.save()
+#         if id == request.user.id:
+#             print('i am called')
+#             login(request, user)
+#         messages.success(request, "Your password has been successfully updated!")
 
-        user.password = make_password(password)
-        user.hint = password
-        user.save()
-        if id == request.user.id:
-            print('i am called')
-            login(request, user)
-        messages.success(request, "Your password has been successfully updated!")
+#     return render(request, 'employees/profile/credentials.html', {'user':user,'id': id})
 
-    return render(request, 'employees/profile/credentials.html', {'user':user,'id': id})
+# @login_required
+# @user_passes_test(allusers)
+# def profile_edit(request):
+#     user = request.user
+#     if request.method == "POST":
+#         form = UserProfileForm(request.POST, instance=user)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('profile')
+#     else:
+#         form = UserProfileForm(instance=user)
+#     return render(request, 'employees/profile/profile_edit.html', {'form': form,'id':user.id, 'personal': True})
 
-@login_required
-@user_passes_test(allusers)
-def profile_edit(request):
-    user = request.user
-    if request.method == "POST":
-        form = UserProfileForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('profile')
-    else:
-        form = UserProfileForm(instance=user)
-    return render(request, 'employees/profile/profile_edit.html', {'form': form,'id':user.id, 'personal': True})
+# @login_required
+# @user_passes_test(superadmin)
+# def profile_edit_admin(request, id):
+#     user = Users.objects.get(id=id)
+#     if request.method == "POST":
+#         form = UserProfileForm(request.POST, instance=user)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('employees')
+#     else:
+#         form = UserProfileForm(instance=user)
+#     return render(request, 'employees/profile/profile_edit.html', {'form': form, 'id':id})
 
-@login_required
-@user_passes_test(superadmin)
-def profile_edit_admin(request, id):
-    user = Users.objects.get(id=id)
-    if request.method == "POST":
-        form = UserProfileForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('employees')
-    else:
-        form = UserProfileForm(instance=user)
-    return render(request, 'employees/profile/profile_edit.html', {'form': form, 'id':id})
+# @login_required
+# @user_passes_test(allusers)
+# def logoutuser(request):
+#     print(1)
+#     logout(request)
+#     return redirect('login_view')
 
-@login_required
-@user_passes_test(allusers)
-def logoutuser(request):
-    print(1)
-    logout(request)
-    return redirect('login_view')
-
-
-def home(request):
-    info  = SchoolInfo.objects.first()
-    return render(request, 'employees/base/base.html')
+# @login_required
+# @user_passes_test(allusers)
+# def home(request):
+#     # info  = SchoolInfo.objects.first()
+#     return render(request, 'employees/base/base.html')
 
 # @login_required
 # @user_passes_test(allusers)
@@ -100,29 +96,29 @@ def home(request):
 
 #     return render(request, 'employees/dashboard/dashboard.html', {'classes':classes,'roles':roles, 'role_counts':role_counts, 'total_classes':total_classes})
 
-@login_required
-@user_passes_test(allusers)
-def admincloud(request, uid):
-    user = request.user
-    files = Files.objects.filter(parent=uid, fk=user.id)
-    message = None
-    message_type = None
+# @login_required
+# @user_passes_test(allusers)
+# def admincloud(request, uid):
+#     user = request.user
+#     files = Files.objects.filter(parent=uid, fk=user.id)
+#     message = None
+#     message_type = None
 
-    if request.method == 'POST':
-        folder_name = request.POST.get('folder_name')
-        if folder_name:
-            if not Files.objects.filter(name=folder_name, ftype='folder', parent=uid, fk=request.user).exists():
-                Files.objects.create(name=folder_name, ftype='folder', fk=user, parent=uid)
-                message = 'Folder created successfully!'
-                message_type = 'success'
-            else:
-                message = 'Folder already exists or invalid data provided.'
-                message_type = 'error'
-                return render(request, 'employees/cloud/cloudtest.html', 
-                            {'context': files, 'uid': uid, 'message': message, 'message_type': message_type})
+#     if request.method == 'POST':
+#         folder_name = request.POST.get('folder_name')
+#         if folder_name:
+#             if not Files.objects.filter(name=folder_name, ftype='folder', parent=uid, fk=request.user).exists():
+#                 Files.objects.create(name=folder_name, ftype='folder', fk=user, parent=uid)
+#                 message = 'Folder created successfully!'
+#                 message_type = 'success'
+#             else:
+#                 message = 'Folder already exists or invalid data provided.'
+#                 message_type = 'error'
+#                 return render(request, 'employees/cloud/cloudtest.html', 
+#                             {'context': files, 'uid': uid, 'message': message, 'message_type': message_type})
 
-    return render(request, 'employees/cloud/cloudtest.html', 
-                {'context': files, 'uid': uid, 'message': message, 'message_type': message_type})
+#     return render(request, 'employees/cloud/cloudtest.html', 
+#                 {'context': files, 'uid': uid, 'message': message, 'message_type': message_type})
 
 # @login_required
 # @user_passes_test(allusers)
@@ -136,10 +132,6 @@ def admincloud(request, uid):
 #     import string
 #     return ''.join(random.choices(string.ascii_letters + string.digits, k=8))
     
-
-def delete_files(request):
-    pass
-
 # @login_required
 # @user_passes_test(superadmin)
 # def addteacher(request):
@@ -253,33 +245,33 @@ def delete_files(request):
 #     folder.delete()
 
 
-@login_required
-@user_passes_test(allusers)
-def delete_folder(request, id):
-    if Files.objects.get(id=id).ftype == 'folder':
-        return_id = Files.objects.get(id=id).parent
-        deletefunc(id)
-    return redirect('teachercloud', uid=return_id)
+# @login_required
+# @user_passes_test(allusers)
+# def delete_folder(request, id):
+#     if Files.objects.get(id=id).ftype == 'folder':
+#         return_id = Files.objects.get(id=id).parent
+#         deletefunc(id)
+#     return redirect('teachercloud', uid=return_id)
 
-@login_required
-@user_passes_test(allusers)
-def reports(request):
-    return render(request, 'employees/reports/reports.html')
+# @login_required
+# @user_passes_test(allusers)
+# def reports(request):
+#     return render(request, 'employees/reports/reports.html')
 
-@login_required
-@user_passes_test(superadmin)
-def addrole(request):
-    return render(request, 'employees/settings/addrole.html')
+# @login_required
+# @user_passes_test(superadmin)
+# def addrole(request):
+#     return render(request, 'employees/settings/addrole.html')
 
-@login_required
-@user_passes_test(allusers)
-def settings(request):
-    user = request.user
-    info = SchoolInfo.objects.first()
-    if request.method == 'POST':
-        form = SchoolInfoForm(request.POST, instance=info)
-        if form.is_valid():
-            form.save()
-    else:
-        form = SchoolInfoForm(instance=info)
-    return render(request,  'employees/settings/settings.html', {'form':form})
+# @login_required
+# @user_passes_test(allusers)
+# def settings(request):
+#     user = request.user
+#     info = SchoolInfo.objects.first()
+#     if request.method == 'POST':
+#         form = SchoolInfoForm(request.POST, instance=info)
+#         if form.is_valid():
+#             form.save()
+#     else:
+#         form = SchoolInfoForm(instance=info)
+#     return render(request,  'employees/settings/settings.html', {'form':form})

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from employees.models import Users, Files
+from employees.models import Users, Files, Class
 from django.contrib.auth.decorators import user_passes_test, login_required
 from app.views import allusers
 from django.views.decorators.csrf import csrf_exempt
@@ -100,3 +100,14 @@ def delete_folder(request, id):
         return_id = Files.objects.get(id=id).parent
         deletefunc(id)
     return redirect('teachercloud', uid=return_id)
+
+@login_required
+@user_passes_test(allusers)
+def addnotes(request):
+    classes = []
+    if request.user.role == 'Teacher' or request.user.role =='Super Admin':
+        classes = Class.objects.filter(monitor=request.user)
+    return render(request, 'employees/students/addnotes.html',{'classes':classes})
+
+
+

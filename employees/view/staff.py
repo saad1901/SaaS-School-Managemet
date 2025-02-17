@@ -6,7 +6,10 @@ from app.views import allusers, superadmin
 @login_required
 @user_passes_test(allusers)
 def teachers(request):
-    employees = Users.objects.all()
+    if request.user.role == 'Super Admin':
+        employees = Users.objects.all()
+    else:
+        employees = Users.objects.exclude(role = 'Super Admin')
     classes = Class.objects.all()
     return render(request, 'employees/staff/staff.html' ,{'employees':employees})
 

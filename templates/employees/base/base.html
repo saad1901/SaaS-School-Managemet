@@ -311,8 +311,8 @@
 
                 {% if user.role == 'Teacher' or user.role == 'Super Admin'%}
                 <li class="nav-item">
-                    <a href="{% url 'postnotes' %}"
-                        class="nav-link {% if request.resolver_match.url_name == 'postnotes' %}active{% endif %}">
+                    <a href="{% url 'addnotes' %}"
+                        class="nav-link {% if request.resolver_match.url_name == 'addnotes' %}active{% endif %}">
                         <i class="bi bi-sticky"></i> <span>Add Notes</span>
                     </a>
                 </li>
