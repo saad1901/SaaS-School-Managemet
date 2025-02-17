@@ -8,6 +8,7 @@
 
 <!-- CONTENT -->
 {% block content %}
+{% if user.role == 'superadmin' %}
 <form method="post" class="needs-validation" novalidate>
     {% csrf_token %}
     <div class="form-group">
@@ -20,6 +21,7 @@
         <button type="submit" class="btn btn-success me-2">Save Changes</button>
     </div>
 </form>
+{% endif %}
 {% endblock %}
 
 <!-- SCRIPT -->

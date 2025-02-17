@@ -71,7 +71,7 @@
         </a>
         {% endfor %}
 
-        {% if user.role == 'Super Admin' %}
+        {% if user.role == 'Super Admin' or user.role ==  'Clerk' %}
         {% for role in roles %}
         <a href="{% url 'employees' %}" class="card employees">
             <div>

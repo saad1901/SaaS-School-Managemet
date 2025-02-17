@@ -82,15 +82,17 @@
         <a href="{% url 'employees' %}" class="card employees">
             <p>All Students</p>
         </a>
+        {% if user.role == 'Super Admin' or user.role == 'Teacher' %}
         <a href="{% url 'employees' %}" class="card employees">
             <p>Assigned Students</p>
         </a>
+        {% endif %}
         <a href="{% url 'employees' %}" class="card employees">
             <p>Marks Report</p>
         </a>
 
         <!-- ADMIN VIEW -->
-        {% if user.role == 'Super Admin' %}
+        {% if user.role == 'Super Admin' or user.role == 'Clerk' %}
         <a href="{% url 'employees' %}" class="card employees">
             <p>Student Fee Report</p>
         </a>

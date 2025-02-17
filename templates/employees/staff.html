@@ -35,7 +35,8 @@
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    .table th, .table td {
+    .table th,
+    .table td {
         vertical-align: middle;
     }
 
@@ -91,6 +92,9 @@
                     <th>Password</th>
                     <th>Actions</th>
                     {% endif %}
+                    {% if user.role == "Clerk" %}
+                    <th>Actions</th>
+                    {% endif%}
                 </tr>
             </thead>
             <tbody>
@@ -104,7 +108,7 @@
                     <td>{{ emp.role }}</td>
                     {% if user.role == 'Super Admin' %}
                     <td>{{ emp.hint }}</td>
-                    
+
                     <td>
                         <a href="{% url 'profile_edit_admin' emp.id %}" class="btn btn-sm btn-outline-primary">
                             <i class="bi bi-pencil"></i> Edit
@@ -114,6 +118,14 @@
                         </a>
                     </td>
                     {% endif %}
+                    {%if user.role == 'Clerk' %}
+                    <td>
+                        <a href="{% url 'profile_edit_admin' emp.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                    </td>
+                    {% endif %}
+
                 </tr>
                 {% endfor %}
             </tbody>
