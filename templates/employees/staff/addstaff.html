@@ -1,4 +1,4 @@
-{% extends 'employees/base.html' %}
+{% extends 'employees/base/base.html' %}
 
 <!-- STYLE -->
 {% block style %}
@@ -194,7 +194,7 @@
         </div>
 
         <button class="btn-success" type="submit">Submit</button>
-        <a href="employees" class="btn-cancel">Cancel</a>
+        <a href="{% url 'employees' %}" class="btn-cancel">Cancel</a>
     </form>
 </div>
 {% endblock %}

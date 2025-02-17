@@ -23,9 +23,9 @@ def login_view(request):
             login(request, user)
             return redirect('dashboard')
         else:
-            return render(request, 'landings/loginpage.html', {'msg': 'Invalid credentials, please try again.'})
+            return render(request, 'landings/login/loginpage.html', {'msg': 'Invalid credentials, please try again.'})
             
-    return render(request, 'landings/loginpage.html')
+    return render(request, 'landings/login/loginpage.html')
 
 
 

@@ -13,15 +13,15 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.contrib.auth import authenticate, login, logout
 import math
 
-@login_required
-@user_passes_test(allusers)
-def profile(request):
-    return render(request, 'employees/profile.html')
+# @login_required
+# @user_passes_test(allusers)
+# def profile(request):
+#     return render(request, 'employees/profile/profile.html')
 
 @login_required
 @user_passes_test(allusers)
 def basefilehtml(request):
-    return render(request, 'employees/profile.html')
+    return render(request, 'employees/profile/profile.html')
 
 @login_required
 @user_passes_test(allusers)
@@ -38,7 +38,7 @@ def credentials(request, id):
            or not any(char.islower() for char in password) \
            or not any(char.isupper() for char in password):
             messages.error(request, "Password must contain at least 8 characters, one uppercase, one lowercase, and one number.")
-            return render(request, 'employees/credentials.html')
+            return render(request, 'employees/profile/credentials.html')
 
         user.password = make_password(password)
         user.hint = password
@@ -48,7 +48,7 @@ def credentials(request, id):
             login(request, user)
         messages.success(request, "Your password has been successfully updated!")
 
-    return render(request, 'employees/credentials.html', {'user':user,'id': id})
+    return render(request, 'employees/profile/credentials.html', {'user':user,'id': id})
 
 @login_required
 @user_passes_test(allusers)
@@ -61,7 +61,7 @@ def profile_edit(request):
             return redirect('profile')
     else:
         form = UserProfileForm(instance=user)
-    return render(request, 'employees/profile_edit.html', {'form': form,'id':user.id, 'personal': True})
+    return render(request, 'employees/profile/profile_edit.html', {'form': form,'id':user.id, 'personal': True})
 
 @login_required
 @user_passes_test(superadmin)
@@ -74,7 +74,7 @@ def profile_edit_admin(request, id):
             return redirect('employees')
     else:
         form = UserProfileForm(instance=user)
-    return render(request, 'employees/profile_edit.html', {'form': form, 'id':id})
+    return render(request, 'employees/profile/profile_edit.html', {'form': form, 'id':id})
 
 @login_required
 @user_passes_test(allusers)
@@ -86,19 +86,19 @@ def logoutuser(request):
 
 def home(request):
     info  = SchoolInfo.objects.first()
-    return render(request, 'employees/base.html', {'info':info})
+    return render(request, 'employees/base/base.html')
 
-@login_required
-@user_passes_test(allusers)
-def dashboard(request):
-    classes = []
-    if request.user.role == 'Teacher':
-        classes = Class.objects.filter(monitor=request.user)
-    roles = Roles.objects.exclude(name = "Super Admin")
-    total_classes = Class.objects.all().count()
-    role_counts = {role.name: Users.objects.filter(role=role.name).count() for role in roles}
+# @login_required
+# @user_passes_test(allusers)
+# def dashboard(request):
+#     classes = []
+#     if request.user.role == 'Teacher':
+#         classes = Class.objects.filter(monitor=request.user)
+#     roles = Roles.objects.exclude(name = "Super Admin")
+#     total_classes = Class.objects.all().count()
+#     role_counts = {role.name: Users.objects.filter(role=role.name).count() for role in roles}
 
-    return render(request, 'employees/dashboard.html', {'classes':classes,'roles':roles, 'role_counts':role_counts, 'total_classes':total_classes})
+#     return render(request, 'employees/dashboard/dashboard.html', {'classes':classes,'roles':roles, 'role_counts':role_counts, 'total_classes':total_classes})
 
 @login_required
 @user_passes_test(allusers)
@@ -118,139 +118,139 @@ def admincloud(request, uid):
             else:
                 message = 'Folder already exists or invalid data provided.'
                 message_type = 'error'
-                return render(request, 'employees/cloudtest.html', 
+                return render(request, 'employees/cloud/cloudtest.html', 
                             {'context': files, 'uid': uid, 'message': message, 'message_type': message_type})
 
-    return render(request, 'employees/cloudtest.html', 
+    return render(request, 'employees/cloud/cloudtest.html', 
                 {'context': files, 'uid': uid, 'message': message, 'message_type': message_type})
 
-@login_required
-@user_passes_test(allusers)
-def teachers(request):
-    employees = Users.objects.all()
-    classes = Class.objects.all()
-    return render(request, 'employees/staff.html' ,{'employees':employees})
+# @login_required
+# @user_passes_test(allusers)
+# def teachers(request):
+#     employees = Users.objects.all()
+#     classes = Class.objects.all()
+#     return render(request, 'employees/staff/staff.html' ,{'employees':employees})
 
-def generate_password():
-    import random
-    import string
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+# def generate_password():
+#     import random
+#     import string
+#     return ''.join(random.choices(string.ascii_letters + string.digits, k=8))
     
 
 def delete_files(request):
     pass
 
-@login_required
-@user_passes_test(superadmin)
-def addteacher(request):
-    if request.method == "POST":
-        name = request.POST.get("name")
-        email = request.POST.get("email")
-        phone = request.POST.get("phone")
-        dob = request.POST.get("dob")
-        gender = request.POST.get("gender")
-        date_of_joining = request.POST.get("date_of_joining")
-        role = request.POST.get("role")
-        salary = request.POST.get("salary") or None
-        address = request.POST.get("address")
-        city = request.POST.get("city")
-        state = request.POST.get("state")
-        postal_code = request.POST.get("postal_code")
-        password = generate_password()
-        print(password)
-        hashed_password = make_password(password)
-        Users.objects.create(
-            name=name, email=email, phone=phone, dob=dob, gender=gender,
-            date_of_joining=date_of_joining, role=role, salary=salary,
-            address=address, city=city, state=state, postal_code=postal_code, password=hashed_password, hint=password
-        )
+# @login_required
+# @user_passes_test(superadmin)
+# def addteacher(request):
+#     if request.method == "POST":
+#         name = request.POST.get("name")
+#         email = request.POST.get("email")
+#         phone = request.POST.get("phone")
+#         dob = request.POST.get("dob")
+#         gender = request.POST.get("gender")
+#         date_of_joining = request.POST.get("date_of_joining")
+#         role = request.POST.get("role")
+#         salary = request.POST.get("salary") or None
+#         address = request.POST.get("address")
+#         city = request.POST.get("city")
+#         state = request.POST.get("state")
+#         postal_code = request.POST.get("postal_code")
+#         password = generate_password()
+#         print(password)
+#         hashed_password = make_password(password)
+#         Users.objects.create(
+#             name=name, email=email, phone=phone, dob=dob, gender=gender,
+#             date_of_joining=date_of_joining, role=role, salary=salary,
+#             address=address, city=city, state=state, postal_code=postal_code, password=hashed_password, hint=password
+#         )
 
-        return redirect("employees")
-    roles = Roles.objects.exclude(name = 'Super Admin')
-    return render(request, 'employees/addstaff.html',{'roles':roles})
+#         return redirect("employees")
+#     roles = Roles.objects.exclude(name = 'Super Admin')
+#     return render(request, 'employees/staff/addstaff.html',{'roles':roles})
 
-@login_required
-@user_passes_test(allusers)
-@csrf_exempt
-def ajax_file_upload(request, dir_id=None):
-    if request.method == 'POST' and request.FILES.get('file'):
-        uploaded_file: InMemoryUploadedFile = request.FILES['file']
-        max_size = 100 * 1024 * 1024
+# @login_required
+# @user_passes_test(allusers)
+# @csrf_exempt
+# def ajax_file_upload(request, dir_id=None):
+#     if request.method == 'POST' and request.FILES.get('file'):
+#         uploaded_file: InMemoryUploadedFile = request.FILES['file']
+#         max_size = 100 * 1024 * 1024
 
-        if uploaded_file.size > max_size:
-            return JsonResponse({'message': 'File size must be less than 100MB.'}, status=400)
+#         if uploaded_file.size > max_size:
+#             return JsonResponse({'message': 'File size must be less than 100MB.'}, status=400)
 
-        file_obj = request.FILES['file']
-        file_name = file_obj.name
+#         file_obj = request.FILES['file']
+#         file_name = file_obj.name
 
-        # Convert size to KB or MB, rounding up
-        if file_obj.size > 1024 * 1024:
-            file_size = str(math.ceil(file_obj.size / (1024 * 1024))) + ' MB'
-        else:
-            file_size = str(math.ceil(file_obj.size / 1024)) + ' KB'
+#         # Convert size to KB or MB, rounding up
+#         if file_obj.size > 1024 * 1024:
+#             file_size = str(math.ceil(file_obj.size / (1024 * 1024))) + ' MB'
+#         else:
+#             file_size = str(math.ceil(file_obj.size / 1024)) + ' KB'
 
-        file_type = file_obj.content_type.split('/')[1]
-        parent_dir = str(dir_id) if dir_id is not None else ''
+#         file_type = file_obj.content_type.split('/')[1]
+#         parent_dir = str(dir_id) if dir_id is not None else ''
  
 
-        # Check if a file with the same name and type exists in the parent directory
-        if Files.objects.filter(name=file_name, ftype=file_type, parent=parent_dir, fk=request.user).exists():
-            print('existerror')
-            return JsonResponse({
-                'message': 'This file already exists in the specified directory.'
-            }, status=400)
+#         # Check if a file with the same name and type exists in the parent directory
+#         if Files.objects.filter(name=file_name, ftype=file_type, parent=parent_dir, fk=request.user).exists():
+#             print('existerror')
+#             return JsonResponse({
+#                 'message': 'This file already exists in the specified directory.'
+#             }, status=400)
 
-        # Save the file to the database
-        file_instance = Files.objects.create(
-            name=file_name,
-            ftype=file_type,
-            file=file_obj,
-            fk=request.user, 
-            parent=parent_dir,
-            file_size=file_size
-        )
+#         # Save the file to the database
+#         file_instance = Files.objects.create(
+#             name=file_name,
+#             ftype=file_type,
+#             file=file_obj,
+#             fk=request.user, 
+#             parent=parent_dir,
+#             file_size=file_size
+#         )
 
-        return JsonResponse({
-            'message': 'File uploaded successfully',
-            'file_url': file_instance.file.url
-        })
+#         return JsonResponse({
+#             'message': 'File uploaded successfully',
+#             'file_url': file_instance.file.url
+#         })
 
-    return JsonResponse({'error': 'Invalid request'}, status=400)
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
 
-@login_required
-@require_http_methods(["DELETE"])
-def delete_files(request):
-    if request.method == 'DELETE':
-        try:
-            import json
-            data = json.loads(request.body)
-            item_ids = data.get('ids', [])
+# @login_required
+# @require_http_methods(["DELETE"])
+# def delete_files(request):
+#     if request.method == 'DELETE':
+#         try:
+#             import json
+#             data = json.loads(request.body)
+#             item_ids = data.get('ids', [])
 
-            for item_id in item_ids:
-                file = Files.objects.get(id=item_id)
-                # Delete the file from media storage
-                if file.file:
-                    default_storage.delete(file.file.path)
-                # Delete the file/folder from the database
-                file.delete()
+#             for item_id in item_ids:
+#                 file = Files.objects.get(id=item_id)
+#                 # Delete the file from media storage
+#                 if file.file:
+#                     default_storage.delete(file.file.path)
+#                 # Delete the file/folder from the database
+#                 file.delete()
 
-            return JsonResponse({'status': 'success'}, status=200)
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+#             return JsonResponse({'status': 'success'}, status=200)
+#         except Exception as e:
+#             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
 
-def deletefunc(id):
-    folder = Files.objects.get(id=id)
-    if Files.objects.filter(parent=id).exists():
-        subfiles = Files.objects.filter(parent=id)
-        for file in subfiles:
-            if file.ftype == 'folder':
-                deletefunc(file.id)
-            else:
-                default_storage.delete(file.file.path)
-                file.delete()
+# def deletefunc(id):
+#     folder = Files.objects.get(id=id)
+#     if Files.objects.filter(parent=id).exists():
+#         subfiles = Files.objects.filter(parent=id)
+#         for file in subfiles:
+#             if file.ftype == 'folder':
+#                 deletefunc(file.id)
+#             else:
+#                 default_storage.delete(file.file.path)
+#                 file.delete()
 
-    folder.delete()
+#     folder.delete()
 
 
 @login_required
@@ -264,12 +264,12 @@ def delete_folder(request, id):
 @login_required
 @user_passes_test(allusers)
 def reports(request):
-    return render(request, 'employees/reports.html')
+    return render(request, 'employees/reports/reports.html')
 
 @login_required
 @user_passes_test(superadmin)
 def addrole(request):
-    return render(request, 'employees/addrole.html')
+    return render(request, 'employees/settings/addrole.html')
 
 @login_required
 @user_passes_test(allusers)
@@ -282,4 +282,4 @@ def settings(request):
             form.save()
     else:
         form = SchoolInfoForm(instance=info)
-    return render(request,  'employees/settings.html', {'form':form})
+    return render(request,  'employees/settings/settings.html', {'form':form})

@@ -1,4 +1,4 @@
-{% extends 'employees/base.html' %}
+{% extends 'employees/base/base.html' %}l' %}
 
 <!-- STYLE -->
 {% block style %}
