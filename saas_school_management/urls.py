@@ -8,4 +8,5 @@ urlpatterns = [
     # path('', include('app.urls')),
     path('', login_view, name='login_view'),
     path('admin/', include('employees.urls'), name='admin'),
+    
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

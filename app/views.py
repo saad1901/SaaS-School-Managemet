@@ -4,7 +4,6 @@ from django.contrib import messages
 
 
 def allusers(user):
-    if user.role == 'Teacher' or user.role == 'Super Admin':
         return True
 
 
@@ -22,7 +21,7 @@ def login_view(request):
         user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request, user)
-            return redirect('teachercloud', uid=0)
+            return redirect('dashboard')
         else:
             return render(request, 'landings/loginpage.html', {'msg': 'Invalid credentials, please try again.'})
             

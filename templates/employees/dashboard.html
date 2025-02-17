@@ -1,15 +1,15 @@
 {% extends 'employees/base.html' %}
-
+{% load custom_filters %}
 <!-- STYLE -->
 {% block style %}
 <style>
-
     .cards-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            grid-gap: 7px;
-            margin-top: 20px;
-        }
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-gap: 7px;
+        margin-top: 20px;
+    }
+
     .card {
         display: flex;
         flex-direction: column;
@@ -72,33 +72,37 @@
         {% endfor %}
 
         {% if user.role == 'Super Admin' %}
+        {% for role in roles %}
         <a href="{% url 'employees' %}" class="card employees">
             <div>
-                <p class="titles">Teachers</p>
+                <p class="titles">{{role.name}}</p>
             </div>
-            <div class="values">{{total_employees}}</div>
+            <div class="values">{{ role_counts|get_item:role.name }}</div>
         </a>
+        {% endfor %}
         <a href="{% url 'employees' %}" class="card employees">
             <div>
-                <p>Clerk</p>
-            </div>
-            <div class="values">3</div>
-        </a>
-        <a href="{% url 'employees' %}" class="card employees">
-            <div>
-                <p>Students</p>
+                <p>Total Students</p>
             </div>
             <div class="values">429</div>
         </a>
-        {% elif user.role == 'Teacher' %}
-
+        <a href="{% url 'classes' %}" class="card employees">
+            <div>
+                <p>Total Classes</p>
+            </div>
+            <div class="values">{{total_classes}}</div>
+        </a>
         {% endif %}
-        <a href="{% url 'employees' %}" class="card employees">
+        {% if user.role == 'Teacher' %}
+
+        <a href="{% url 'students' %}" class="card employees">
             <div>
                 <p>Assigned Students</p>
             </div>
             <div class="values">76</div>
         </a>
+
+        {% endif %}
     </div>
 </div>
 

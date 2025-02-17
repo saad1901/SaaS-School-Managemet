@@ -66,7 +66,7 @@
         <div class="action-buttons">
             {% if user.role == 'Super Admin' %}
             <a href="{% url 'addteacher' %}" class="btn btn-primary">
-                <i class="bi bi-person-plus"></i> Add Teacher
+                <i class="bi bi-person-plus"></i> Add Staff
             </a>
             {% endif %}
 
@@ -83,11 +83,12 @@
                 <tr>
                     <th>Staff ID</th>
                     <th>Name</th>
+                    <!-- <th>Classes</th> -->
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Position</th>
                     {% if user.role == 'Super Admin' %}
-                    <th>Hint</th>
+                    <th>Password</th>
                     <th>Actions</th>
                     {% endif %}
                 </tr>
@@ -97,6 +98,7 @@
                 <tr>
                     <td>{{ emp.id }}</td>
                     <td>{{ emp.name }}</td>
+                    <!-- <td>{% for class in classes %} {% if class.monitor == emp %} {{class.name}} {% endif %} {% endfor %}</td> -->
                     <td>{{ emp.email }}</td>
                     <td>{{ emp.phone }}</td>
                     <td>{{ emp.role }}</td>
@@ -118,6 +120,7 @@
         </table>
     </div>
 </div>
+
 {% endblock %}
 
 <!-- SCRIPT -->

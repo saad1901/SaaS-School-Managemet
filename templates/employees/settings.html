@@ -1,0 +1,28 @@
+{% extends 'employees/base.html' %}
+
+<!-- STYLE -->
+{% block style %}
+
+
+{% endblock %}
+
+<!-- CONTENT -->
+{% block content %}
+<form method="post" class="needs-validation" novalidate>
+    {% csrf_token %}
+    <div class="form-group">
+    
+        <table class="table">
+            {{ form.as_table }}
+        </table>
+    </div>
+    <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-success me-2">Save Changes</button>
+    </div>
+</form>
+{% endblock %}
+
+<!-- SCRIPT -->
+{% block script %}
+
+{% endblock %}

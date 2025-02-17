@@ -111,7 +111,7 @@
 <!-- CONTENT -->
 {% block content %}
 <div class="form-container">
-    <h2>Employee Registration</h2>
+    <h2>Staff Registration</h2>
     <form method="post" action="#">
         {% csrf_token %}
 
@@ -157,11 +157,11 @@
 
         <div class="form-row">
             <div class="form-group">
-                <label for="role">Role</label>
+                <label for="role">Role <a href="{% url 'addrole'%}">(add role)</a></label>
                 <select id="role" name="role">
-                    <option value="Teacher" selected>Teacher</option>
-                    <option value="Admin">Admin</option>
-                    <option value="Staff">Staff</option>
+                    {% for role in roles %}
+                    <option value="{{role.name}}" {% if role.name == 'Teacher'%} selected {% endif %}>{{role.name}}</option>
+                    {% endfor %}
                 </select>
             </div>
 

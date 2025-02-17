@@ -261,7 +261,7 @@
         <!-- Sidebar -->
         <nav id="sidebar">
             <div class="sidebar-heading">
-                <h5>ABC School</h5>
+                <h5>{{info.school_name}}</h5>
             </div>
             <ul class="nav flex-column">
                 <li class="nav-item">
@@ -270,6 +270,7 @@
                         <i class="bi bi-house-door"></i> <span>Dashboard</span>
                     </a>
                 </li>
+                {% if user.role == 'Super Admin' or user.role == 'Teacher' or user.role == 'Clerk'%}
                 <li class="nav-item">
                     <a href="{% url 'students' %}"
                         class="nav-link {% if request.resolver_match.url_name == 'students' %}active{% endif %}">
@@ -306,6 +307,9 @@
                         <i class="bi bi-file-earmark-bar-graph"></i> <span>Reports</span>
                     </a>
                 </li>
+                {% endif %}
+
+                {% if user.role == 'Teacher' or user.role == 'Super Admin'%}
                 <li class="nav-item">
                     <a href="{% url 'postnotes' %}"
                         class="nav-link {% if request.resolver_match.url_name == 'postnotes' %}active{% endif %}">
@@ -318,6 +322,8 @@
                         <i class="bi bi-journal-check"></i> <span>Add Homework</span>
                     </a>
                 </li>
+                {% endif %}
+
                 <li class="nav-item">
                     <a href="{% url 'finance' %}"
                         class="nav-link {% if request.resolver_match.url_name == 'finance' %}active{% endif %}">
@@ -326,7 +332,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'settings' %}"
-                        class="nav-link {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
+                        class="nav-link {% if request.resolver_match.url_name == 'settings'  or request.resolver_match.url_name == 'addrole' %}active{% endif %}">
                         <i class="bi bi-gear"></i> <span>Settings</span>
                     </a>
                 </li>

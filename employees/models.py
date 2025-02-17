@@ -79,6 +79,16 @@ class Class(models.Model):
     section = models.CharField(max_length=15, blank=True, null=True)
     monitor = models.ForeignKey(Users, on_delete=models.SET_NULL, null=True, blank=True)
 
+class Roles(models.Model):
+    name = models.CharField(max_length=20)
+    choices = [
+        ('Teaching', 'Teaching'),
+        ('Non Teaching', 'Non Teaching'),
+        ('Guest', 'Guest'),
+        ('Other', 'Other'),
+    ]
+    rtype = models.CharField(max_length=15, choices=choices)
+
 # class Student(models.Model):
 #     GENDER_CHOICES = [
 #         ('M', 'Male'),
@@ -106,3 +116,16 @@ class Class(models.Model):
 #     def __str__(self):
 #         return f"{self.first_name} {self.last_name} ({self.roll_number})"
 
+
+class SchoolInfo(models.Model):
+    school_name = models.CharField(max_length=100)
+    address = models.TextField()
+    city = models.CharField(max_length=50)
+    state = models.CharField(max_length=50)
+    postal_code = models.CharField(max_length=10)
+    phone = models.CharField(max_length=15)
+    email = models.EmailField()
+    website = models.URLField()
+    logo = models.ImageField(upload_to='school/', blank=True, null=True)
+    def __str__(self):
+        return self.school_name

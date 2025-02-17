@@ -5,7 +5,7 @@ from app.views import *
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.hashers import make_password
-from .forms import UserProfileForm
+from .forms import UserProfileForm, SchoolInfoForm
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods
 from django.core.files.storage import default_storage
@@ -16,6 +16,11 @@ import math
 @login_required
 @user_passes_test(allusers)
 def profile(request):
+    return render(request, 'employees/profile.html')
+
+@login_required
+@user_passes_test(allusers)
+def basefilehtml(request):
     return render(request, 'employees/profile.html')
 
 @login_required
@@ -71,9 +76,7 @@ def profile_edit_admin(request, id):
         form = UserProfileForm(instance=user)
     return render(request, 'employees/profile_edit.html', {'form': form, 'id':id})
 
-
-
-
+@login_required
 @user_passes_test(allusers)
 def logoutuser(request):
     print(1)
@@ -82,17 +85,20 @@ def logoutuser(request):
 
 
 def home(request):
-    return render(request, 'employees/base.html')
+    info  = SchoolInfo.objects.first()
+    return render(request, 'employees/base.html', {'info':info})
 
 @login_required
 @user_passes_test(allusers)
 def dashboard(request):
     classes = []
     if request.user.role == 'Teacher':
-        # return render(request, 'employees/superadmin_dashboard.html')
         classes = Class.objects.filter(monitor=request.user)
-    total_employees = Users.objects.filter(role='Teacher').count()
-    return render(request, 'employees/dashboard.html', {'classes': classes, 'total_employees': total_employees})
+    roles = Roles.objects.exclude(name = "Super Admin")
+    total_classes = Class.objects.all().count()
+    role_counts = {role.name: Users.objects.filter(role=role.name).count() for role in roles}
+
+    return render(request, 'employees/dashboard.html', {'classes':classes,'roles':roles, 'role_counts':role_counts, 'total_classes':total_classes})
 
 @login_required
 @user_passes_test(allusers)
@@ -122,6 +128,7 @@ def admincloud(request, uid):
 @user_passes_test(allusers)
 def teachers(request):
     employees = Users.objects.all()
+    classes = Class.objects.all()
     return render(request, 'employees/staff.html' ,{'employees':employees})
 
 def generate_password():
@@ -158,9 +165,9 @@ def addteacher(request):
             address=address, city=city, state=state, postal_code=postal_code, password=hashed_password, hint=password
         )
 
-        return redirect("teachers")
-
-    return render(request, 'employees/addstaff.html')
+        return redirect("employees")
+    roles = Roles.objects.exclude(name = 'Super Admin')
+    return render(request, 'employees/addstaff.html',{'roles':roles})
 
 @login_required
 @user_passes_test(allusers)
@@ -258,3 +265,21 @@ def delete_folder(request, id):
 @user_passes_test(allusers)
 def reports(request):
     return render(request, 'employees/reports.html')
+
+@login_required
+@user_passes_test(superadmin)
+def addrole(request):
+    return render(request, 'employees/addrole.html')
+
+@login_required
+@user_passes_test(allusers)
+def settings(request):
+    user = request.user
+    info = SchoolInfo.objects.first()
+    if request.method == 'POST':
+        form = SchoolInfoForm(request.POST, instance=info)
+        if form.is_valid():
+            form.save()
+    else:
+        form = SchoolInfoForm(instance=info)
+    return render(request,  'employees/settings.html', {'form':form})
