@@ -28,7 +28,7 @@ def ajax_file_upload(request, dir_id=None):
 
         max_size = 100 * 1024 * 1024
 
-        if uploaded_file.size < max_size:
+        if uploaded_file.size > max_size:
             return JsonResponse({'message': 'File size must be less than 100MB.'}, status=400)
 
         file_obj = request.FILES['file']

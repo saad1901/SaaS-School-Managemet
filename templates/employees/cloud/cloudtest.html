@@ -418,7 +418,7 @@
         const file = this.files[0]; // Get the selected file
         const maxSize = 100 * 1024 * 1024; // 100MB in bytes
 
-        if (file && file.size < maxSize) {
+        if (file && file.size > maxSize) {
             alert("File size must be 100MB or smaller.");
             this.value = ''; // Clear the file input
         }
