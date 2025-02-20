@@ -22,8 +22,8 @@ def admincloud(request, uid):
             else:
                 message = 'Folder already exists or invalid data provided.'
                 message_type = 'error'
-                return render(request, 'employees/cloud/cloudtest.html', 
-                            {'context': files, 'uid': uid, 'message': message, 'message_type': message_type})
+                # return render(request, 'employees/cloud/cloudtest.html', 
+                #             {'context': files, 'uid': uid, 'message': message, 'message_type': message_type})
 
     storage = round(user.storage / (1024 * 1024), 2)
     max_storage = int(user.max_storage/(1000*1000))
