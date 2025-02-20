@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from employees.models import Class, Users, Roles
 from django.contrib.auth.decorators import user_passes_test, login_required
 from app.views import allusers, superadmin
+from django.contrib.auth.hashers import make_password
 
 @login_required
 @user_passes_test(allusers)
@@ -29,6 +30,7 @@ def addteacher(request):
         gender = request.POST.get("gender")
         date_of_joining = request.POST.get("date_of_joining")
         role = request.POST.get("role")
+        max_storage = request.POST.get("max_storage")
         salary = request.POST.get("salary") or None
         address = request.POST.get("address")
         city = request.POST.get("city")
@@ -39,7 +41,7 @@ def addteacher(request):
         hashed_password = make_password(password)
         Users.objects.create(
             name=name, email=email, phone=phone, dob=dob, gender=gender,
-            date_of_joining=date_of_joining, role=role, salary=salary,
+            date_of_joining=date_of_joining, role=role, salary=salary, max_storage=max_storage, 
             address=address, city=city, state=state, postal_code=postal_code, password=hashed_password, hint=password
         )
 

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from employees.models import Users, Files, Class
+from employees.models import Users, Files, Class, Notes
 from django.contrib.auth.decorators import user_passes_test, login_required
 from app.views import allusers
 from django.views.decorators.csrf import csrf_exempt
@@ -9,15 +9,26 @@ from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import math
 
+
 @login_required
 @user_passes_test(allusers)
 @csrf_exempt
 def ajax_file_upload(request, dir_id=None):
     if request.method == 'POST' and request.FILES.get('file'):
         uploaded_file: InMemoryUploadedFile = request.FILES['file']
+        user = request.user 
+        uploaded_size = uploaded_file.size / 1024 
+        print(int(uploaded_size))
+        if user.storage + uploaded_size > user.max_storage:
+            # print(user.storage + uploaded_size)
+            # print(user.max_storage)
+            return JsonResponse({'message': 'Storage Limit has been Hit! Contact Admin'}, status=400)
+        # Update storage usage
+        Users.objects.filter(id=user.id).update(storage=user.storage + int(uploaded_size))
+
         max_size = 100 * 1024 * 1024
 
-        if uploaded_file.size > max_size:
+        if uploaded_file.size < max_size:
             return JsonResponse({'message': 'File size must be less than 100MB.'}, status=400)
 
         file_obj = request.FILES['file']
@@ -47,7 +58,8 @@ def ajax_file_upload(request, dir_id=None):
             file=file_obj,
             fk=request.user, 
             parent=parent_dir,
-            file_size=file_size
+            file_size=file_size,
+            sizeinkb = int(uploaded_size)
         )
 
         return JsonResponse({
@@ -61,18 +73,22 @@ def ajax_file_upload(request, dir_id=None):
 @require_http_methods(["DELETE"])
 def delete_files(request):
     if request.method == 'DELETE':
+        user = request.user
         try:
             import json
             data = json.loads(request.body)
             item_ids = data.get('ids', [])
+            totalsizeinkb = 0
 
             for item_id in item_ids:
                 file = Files.objects.get(id=item_id)
-                # Delete the file from media storage
+                totalsizeinkb = totalsizeinkb + file.sizeinkb
                 if file.file:
                     default_storage.delete(file.file.path)
                 # Delete the file/folder from the database
                 file.delete()
+            
+            Users.objects.filter(id=user.id).update(storage=user.storage - totalsizeinkb)
 
             return JsonResponse({'status': 'success'}, status=200)
         except Exception as e:
@@ -101,13 +117,48 @@ def delete_folder(request, id):
         deletefunc(id)
     return redirect('teachercloud', uid=return_id)
 
+
 @login_required
 @user_passes_test(allusers)
 def addnotes(request):
     classes = []
     if request.user.role == 'Teacher' or request.user.role =='Super Admin':
         classes = Class.objects.filter(monitor=request.user)
+
     return render(request, 'employees/students/addnotes.html',{'classes':classes})
 
 
+# @login_required
+# @user_passes_test(allusers)
+def get_items(request):
+    # Use the same query parameter names as in your JavaScript
+    
+    classfor_param = request.GET.get('classfor')
+    parent_param = request.GET.get('parent')
+    
+    print(classfor_param)
+    # Optionally, if you expect top-level items to have a null/empty parent:
+    if not parent_param:
+        print('parent param')
+        parent_param = 0
+
+    # parent_param = 0
+    if parent_param is not 0:
+        items = Notes.objects.filter(parent=parent_param)
+    else:
+        items = Notes.objects.filter(classfor=classfor_param, parent=parent_param)
+    
+    data = {
+        'items': [
+            {
+                'id': item.id,
+                'name': item.name,
+                'is_folder': item.ftype == 'Folder',  # Check if ftype is 'folder'
+                'type': item.ftype,
+            }
+            for item in items
+        ]
+    }
+    print(data)
+    return JsonResponse(data)
 

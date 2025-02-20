@@ -131,7 +131,14 @@
         /* Adjust spacing */
     }
 
-
+    .storagediv{
+        margin-right: 100px;
+    }
+    .storagediv h2{
+        margin-right: 100px;
+        font-weight: bold;
+        color: #ffffff;
+    }
 
     .header-actions,
     .file-actions {
@@ -140,7 +147,7 @@
         text-align: center;
     }
 
-    #deleteSelectedButton{
+    #deleteSelectedButton {
         margin-right: 20px;
         border-radius: 40px;
     }
@@ -159,6 +166,10 @@
         </button>
         {% endif %}
     </div>
+    <div class="storagediv">
+        <h2>Storage {{storage}}/{{max_storage}}GB</h2>
+    </div>
+    
 
     <div class="d-flex align-items-center">
         <button class="btn btn-danger" id="deleteSelectedButton" title="Delete Selected">
@@ -225,7 +236,8 @@
             <img src="{% static 'images/icon/audio.png' %}" class="file-icon" alt="Audio">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
 
-            {% elif c.name|slice:"-4:" == ".cpp" or c.name|slice:"-4:" == ".php" or c.name|slice:"-4:" == ".zip" or c.name|slice:"-4:" == ".sql" or c.name|slice:"-4:" == ".exe" or c.name|slice:"-4:" == ".css" %}
+            {% elif c.name|slice:"-4:" == ".cpp" or c.name|slice:"-4:" == ".php" or c.name|slice:"-4:" == ".zip" or
+            c.name|slice:"-4:" == ".sql" or c.name|slice:"-4:" == ".exe" or c.name|slice:"-4:" == ".css" %}
             <img src="{% static 'images/icon/' %}{{ c.name|slice:'-3:' }}.png" class="file-icon" alt="3X-Code">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
 
@@ -288,7 +300,7 @@
 
     </div>
     {% endfor %}
-</div>  
+</div>
 
 
 <!-- Add this button below the file manager section -->
@@ -406,7 +418,7 @@
         const file = this.files[0]; // Get the selected file
         const maxSize = 100 * 1024 * 1024; // 100MB in bytes
 
-        if (file && file.size > maxSize) {
+        if (file && file.size < maxSize) {
             alert("File size must be 100MB or smaller.");
             this.value = ''; // Clear the file input
         }
@@ -446,11 +458,14 @@
                         });
                     } else {
                         // Close the spinner and show error message
-                        Swal.close();
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Upload Failed',
-                            text: 'File already exists or the request is invalid.',
+
+                        return response.json().then(errorData => {
+                            Swal.close();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Upload Failed',
+                                text: errorData.message || 'An error occurred. Please try again.',
+                            });
                         });
                     }
                 })

@@ -49,6 +49,8 @@ class Users(AbstractBaseUser, PermissionsMixin):
     state = models.CharField(max_length=50, blank=True, null=True)
     postal_code = models.CharField(max_length=10, blank=True, null=True)
     hint = models.CharField(max_length=50, blank=True, null=True)
+    storage = models.IntegerField(default=0)
+    max_storage = models.IntegerField(default=0)
     # Permissions
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -71,6 +73,7 @@ class Files(models.Model):
     file = models.FileField(upload_to='uploads/', null=True, blank=True)  # Store files in 'uploads/' directory
     fk = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    sizeinkb = models.IntegerField(default=0)
     def __str__(self):
         return self.name
 
@@ -116,7 +119,6 @@ class Roles(models.Model):
 #     def __str__(self):
 #         return f"{self.first_name} {self.last_name} ({self.roll_number})"
 
-
 class SchoolInfo(models.Model):
     school_name = models.CharField(max_length=100)
     address = models.TextField()
@@ -129,3 +131,21 @@ class SchoolInfo(models.Model):
     logo = models.ImageField(upload_to='school/', blank=True, null=True)
     def __str__(self):
         return self.school_name
+
+# class Storage(models.Model):
+#     Admin = models.IntegerField(default=1000000)
+#     Teacher = models.IntegerField(default=1000000)
+    # Clerk = models.IntegerField(default=1000000)
+
+
+class Notes(models.Model):
+    name = models.CharField(max_length=60)
+    ftype = models.CharField(max_length=25)
+    parent = models.CharField(max_length=60, blank=True, null=True)
+    file_size = models.CharField(max_length=60, blank=True, null=True, default=None)
+    file = models.FileField(upload_to='notes/', null=True, blank=True)  # Store files in 'uploads/' directory
+    fk = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    classfor = models.CharField(max_length=10, null=True)
+    def __str__(self):
+        return self.name
