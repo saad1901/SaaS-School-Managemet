@@ -4,7 +4,7 @@ from django.contrib import messages
 
 
 def allusers(user):
-    if user.role == 'Super Admin' or user.role ==  'Teacher' or user.role == 'Clerk':
+    if user.role == 'Super Admin' or user.role ==  'Teacher' or user.role == 'Clerk' or user.role == 'Peon':
         return True
 
 def mangagement(user):
