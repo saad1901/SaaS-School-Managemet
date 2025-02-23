@@ -48,7 +48,7 @@ def ajax_file_upload(request, dir_id=None):
         if Files.objects.filter(name=file_name, ftype=file_type, parent=parent_dir, fk=request.user).exists():
             print('existerror')
             return JsonResponse({
-                'message': 'This file already exists in the specified directory.'
+                'message': 'This file already exists in this directory.'
             }, status=400)
 
         # Save the file to the database
@@ -82,8 +82,8 @@ def delete_files(request):
 
             for item_id in item_ids:
                 file = Files.objects.get(id=item_id)
-                totalsizeinkb = totalsizeinkb + file.sizeinkb
                 if file.file:
+                    totalsizeinkb = totalsizeinkb + file.sizeinkb
                     default_storage.delete(file.file.path)
                 # Delete the file/folder from the database
                 file.delete()
@@ -97,25 +97,33 @@ def delete_files(request):
 
 def deletefunc(id):
     folder = Files.objects.get(id=id)
+    totalsizeinkb = 0
     if Files.objects.filter(parent=id).exists():
+        
         subfiles = Files.objects.filter(parent=id)
         for file in subfiles:
             if file.ftype == 'folder':
-                deletefunc(file.id)
+                totalsizeinkb = totalsizeinkb + deletefunc(file.id)
             else:
+                totalsizeinkb = totalsizeinkb + file.sizeinkb
                 default_storage.delete(file.file.path)
                 file.delete()
 
     folder.delete()
-
+    return totalsizeinkb
 
 @login_required
 @user_passes_test(allusers)
 def delete_folder(request, id):
+    user = request.user
     if Files.objects.get(id=id).ftype == 'folder':
         return_id = Files.objects.get(id=id).parent
-        deletefunc(id)
+        # totalsizeinkb = deletefunc(id)
+        Users.objects.filter(id=user.id).update(storage=user.storage - deletefunc(id))
     return redirect('teachercloud', uid=return_id)
+
+
+### NOTES SECTION ###
 
 
 @login_required
@@ -128,18 +136,16 @@ def addnotes(request):
     return render(request, 'employees/students/addnotes.html',{'classes':classes})
 
 
-# @login_required
-# @user_passes_test(allusers)
+@login_required
+@user_passes_test(allusers)
 def get_items(request):
     # Use the same query parameter names as in your JavaScript
     
     classfor_param = request.GET.get('classfor')
     parent_param = request.GET.get('parent')
-    
-    print(classfor_param)
-    # Optionally, if you expect top-level items to have a null/empty parent:
+
+
     if not parent_param:
-        print('parent param')
         parent_param = 0
 
     # parent_param = 0
