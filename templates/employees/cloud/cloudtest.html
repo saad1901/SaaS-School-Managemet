@@ -239,8 +239,7 @@
             <img src="{% static 'images/icon/audio.png' %}" class="file-icon" alt="Audio">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
 
-            {% elif c.name|slice:"-4:" == ".cpp" or c.name|slice:"-4:" == ".php" or c.name|slice:"-4:" == ".zip" or
-            c.name|slice:"-4:" == ".sql" or c.name|slice:"-4:" == ".exe" or c.name|slice:"-4:" == ".css" %}
+            {% elif c.name|slice:"-4:" == ".cpp" or c.name|slice:"-4:" == ".php" or c.name|slice:"-4:" == ".zip" or c.name|slice:"-4:" == ".sql" or c.name|slice:"-4:" == ".exe" or c.name|slice:"-4:" == ".css" %}
             <img src="{% static 'images/icon/' %}{{ c.name|slice:'-3:' }}.png" class="file-icon" alt="3X-Code">
             <a href="{{ c.file.url }}" target="_blank" class="file-name">{{ c.name }}</a>
 
@@ -343,7 +342,7 @@
             Swal.fire({
                 icon: 'warning',
                 title: 'No Selection',
-                text: 'Please select at least one file or folder to delete.',
+                text: 'Please select at least one file to delete.',
             });
             return;
         }
