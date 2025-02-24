@@ -8,3 +8,4 @@ from .uploadfile import *
 from .cloud import *
 from .home import *
 from .authentication import *
+from .classes import *

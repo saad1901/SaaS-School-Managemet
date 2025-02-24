@@ -1,0 +1,41 @@
+{% extends 'employees/base/base.html' %}
+
+<!-- STYLE -->
+{% block style %}
+
+<style>
+    .classDiv{
+        color:white;
+        background-color: rgb(29, 48, 41);
+        width: 100px;
+        height: 30px;
+        margin-bottom: 20px;
+        padding-left: 10px;
+        padding-top: 4px;
+        border-radius: 20px;
+    }
+    .classDiv:hover {
+        background-color: rgb(24, 214, 214);
+        cursor: pointer;
+    }
+</style>
+
+{% endblock %}
+
+<!-- CONTENT -->
+{% block content %}
+
+{% for class in classes %}
+
+    <div class="classDiv">
+        {{class.name}}
+    </div>
+
+{% endfor %}
+
+{% endblock %}
+
+<!-- SCRIPT -->
+{% block script %}
+
+{% endblock %}
