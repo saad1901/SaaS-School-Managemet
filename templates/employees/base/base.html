@@ -332,7 +332,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'settings' %}"
-                        class="nav-link {% if request.resolver_match.url_name == 'settings'  or request.resolver_match.url_name == 'addrole' %}active{% endif %}">
+                        class="nav-link {% if request.resolver_match.url_name == 'settings'  or request.resolver_match.url_name == 'addrole'  or request.resolver_match.url_name == 'settingspermissions' %}active{% endif %}">
                         <i class="bi bi-gear"></i> <span>Settings</span>
                     </a>
                 </li>

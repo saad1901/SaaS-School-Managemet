@@ -1,0 +1,96 @@
+{% extends 'employees/base/base.html' %}
+
+<!-- STYLE -->
+{% block style %}
+{{ block.super }}
+<style>
+    :root {
+        --topbar-height: 65px;
+        --main-sidebar-width: 250px;
+        --settings-sidebar-width: 300px;
+    }
+
+    .settings-sidebar {
+        position: fixed;
+        top: var(--topbar-height);
+        left: var(--main-sidebar-width);
+        width: var(--settings-sidebar-width);
+        height: calc(100vh - var(--topbar-height));
+        background: #201d33;
+        padding: 20px;
+        border-right: 1px solid #040113;
+        overflow-y: auto;
+        z-index: 900;
+    }
+
+    .settings-content {
+        margin-left: 300px;
+        padding: 20px;
+        /* min-height: calc(100vh - var(--topbar-height)); */
+    }
+
+    .settings-sidebar .list-group-item {
+        background: #201d33;
+        border-color: #040113;
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+
+    .settings-sidebar .list-group-item.active,
+    .settings-sidebar .list-group-item:hover {
+        background: #040113;
+        border-color: #fff;
+    }
+</style>
+{% endblock %}
+
+<!-- CONTENT -->
+{% block content %}
+{% if user.role == 'Super Admin' %}
+    <!-- Settings-specific Sidebar -->
+    <div class="settings-sidebar">
+        <h5 class="text-light mb-4">Settings Menu</h5>
+        <div class="list-group">
+            {% url 'settings' as settings_url %}
+            <a href="{{ settings_url }}" class="list-group-item list-group-item-action {% if request.path == settings_url %}active{% endif %}">
+                General Settings
+            </a>
+            
+            {% url 'settingspermissions' as permissions_url %}
+            <a href="{{ permissions_url }}" class="list-group-item list-group-item-action {% if request.path == permissions_url %}active{% endif %}">
+                User Permissions
+            </a>
+            
+            <a href="#" class="list-group-item list-group-item-action">Audit Logs</a>
+            <a href="#" class="list-group-item list-group-item-action">Integration Settings</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="settings-content">
+        {% block settings_content %}
+        <!-- Content will be inserted here -->
+        {% endblock %}
+    </div>
+{% endif %}
+{% endblock %}
+
+<!-- SCRIPT -->
+{% block script %}
+{{ block.super }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add click handler for visual feedback
+        document.querySelectorAll('.settings-sidebar .list-group-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                // Remove active class from all items
+                document.querySelectorAll('.settings-sidebar .list-group-item').forEach(link => {
+                    link.classList.remove('active');
+                });
+                // Add active class to clicked item
+                this.classList.add('active');
+            });
+        });
+    });
+</script>
+{% endblock %}

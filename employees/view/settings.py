@@ -21,3 +21,9 @@ def settings(request):
 @user_passes_test(superadmin)
 def addrole(request):
     return render(request, 'employees/settings/addrole.html')
+
+
+@login_required
+@user_passes_test(superadmin)
+def settingspermissions(request):
+    return render(request, 'employees/settings/permissions.html')
