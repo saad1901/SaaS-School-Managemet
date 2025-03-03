@@ -22,6 +22,7 @@ def ajax_file_upload(request, dir_id=None):
         if user.storage + uploaded_size > user.max_storage:
             # print(user.storage + uploaded_size)
             # print(user.max_storage)
+            print('I was called')
             return JsonResponse({'message': 'Storage Limit has been Hit! Contact Admin'}, status=400)
         # Update storage usage
         Users.objects.filter(id=user.id).update(storage=user.storage + int(uploaded_size))

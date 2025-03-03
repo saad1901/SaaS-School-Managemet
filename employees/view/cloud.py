@@ -25,8 +25,16 @@ def admincloud(request, uid):
                 # return render(request, 'employees/cloud/cloudtest.html', 
                 #             {'context': files, 'uid': uid, 'message': message, 'message_type': message_type})
 
-    storage = round(user.storage / (1024 * 1024), 2)
-    max_storage = int(user.max_storage/(1000*1000))
+    # storage = round(user.storage / (1024 * 1024), 2)
+    max_storage = int(user.max_storage)
+    if max_storage < 1000000:
+        size_unit = 'MB'
+        max_storage = int(user.max_storage/(1000))
+        storage = round(user.storage / (1024), 2)
+    else:
+        size_unit = 'GB'
+        max_storage = int(user.max_storage/(1000000))
+        storage = round(user.storage / (1024 * 1024), 2)
     return render(request, 'employees/cloud/cloudtest.html', 
                 {
                 'context': files,
@@ -34,5 +42,6 @@ def admincloud(request, uid):
                 'message': message,
                 'message_type': message_type,
                 'storage': storage,
-                'max_storage': max_storage
+                'max_storage': max_storage,
+                'size_unit': size_unit
                    })
