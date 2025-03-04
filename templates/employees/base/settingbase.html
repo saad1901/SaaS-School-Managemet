@@ -60,6 +60,10 @@
             <a href="{{ permissions_url }}" class="list-group-item list-group-item-action {% if request.path == permissions_url %}active{% endif %}">
                 User Permissions
             </a>
+            {% url 'storagemanage' as storagemanage %}
+            <a href="{{ storagemanage }}" class="list-group-item list-group-item-action {% if request.path == storagemanage %}active{% endif %}">
+                Manage Storage
+            </a>
             
             <a href="#" class="list-group-item list-group-item-action">Audit Logs</a>
             <a href="#" class="list-group-item list-group-item-action">Integration Settings</a>

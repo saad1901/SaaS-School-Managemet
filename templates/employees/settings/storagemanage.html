@@ -1,0 +1,49 @@
+{% extends 'employees/base/settingbase.html' %}
+
+<!-- STYLE -->
+{% block style %}
+{{ block.super }}
+<!-- Add any page-specific styles here -->
+{% endblock %}
+
+<!-- CONTENT -->
+{% block settings_content %}
+<div class="content">
+<table class="table table-bordered table-hover ">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Storage Used</th>
+            <th>Storage Capacity</th>
+            <th>Storage Available</th>
+            <th>Storage Status</th>
+            <th>Storage Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users%}
+            <tr>
+                <td>{{user.name}}</td>
+                <td>{{user.storage}}</td>
+                <td>{{user.max_storage}}</td>
+                <td>{{ user.available_storage }}</td>   
+                {% if user.max_storage == 0 %}
+                <td style="color: red; font-weight: bold;">Inactive</td>
+                {% else %}
+                <td style="color: rgb(18, 189, 12); font-weight: bold;">Active</td>
+                {% endif %}
+                <td>Actions#</td>
+            </tr>
+        {% endfor%}
+    </tbody>
+    
+</table>
+</div>
+{% endblock %}
+
+<!-- SCRIPT -->
+{% block script %}
+{{ block.super }}
+
+<!-- Add any page-specific scripts here -->
+{% endblock %}

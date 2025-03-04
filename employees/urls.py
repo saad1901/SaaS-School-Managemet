@@ -12,6 +12,7 @@ urlpatterns = [
     path('finance', view.home, name='finance'),
     path('settings', view.settings, name='settings'),
     path('settings/permissions', view.settingspermissions, name='settingspermissions'),
+    path('settings/storagemanage', view.storagemanage, name='storagemanage'),
     path('profile', view.profile, name='profile'),
     path('profile/edit', view.profile_edit, name='profile_edit'),
     path('profile/edit/<int:id>', view.profile_edit_admin, name='profile_edit_admin'),

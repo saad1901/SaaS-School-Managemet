@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from employees.models import SchoolInfo
+from employees.models import SchoolInfo, Users
 from employees.forms import SchoolInfoForm
 from django.contrib.auth.decorators import user_passes_test, login_required
 from app.views import allusers, superadmin
@@ -27,3 +27,13 @@ def addrole(request):
 @user_passes_test(superadmin)
 def settingspermissions(request):
     return render(request, 'employees/settings/permissions.html')
+
+
+@login_required
+@user_passes_test(superadmin)
+def storagemanage(request):
+    users = Users.objects.all().values("id", "name", "storage", "max_storage")
+    for user in users:
+        user["available_storage"] = user["max_storage"] - user["storage"]
+
+    return render(request, 'employees/settings/storagemanage.html', {'users': users})
